@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprint de Crise — AFF Séminaire 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══ CONFIG — REMPLACER CES DEUX VALEURS ══
+   Voir le fichier supabase-setup.sql pour les instructions
+   ════════════════════════════════════════ */
+
+:root{--y:#FFD600;--yd:#E6C000;--p:#4A4063;--pd:#2E2840;--pl:#6B5F8A;--w:#fff;--ow:#F7F5F0;--gl:#EEECF5;--td:#1A1728;--s1:#FFD600;--s2:#FF8C42;--s3:#E84855;--s4:#4A4063}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--pd);color:var(--w);overflow-x:hidden}
+
+/* ── CONFIG BANNER ── */
+.config-banner{background:#E84855;color:white;text-align:center;padding:.7rem 1.5rem;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.config-banner strong{font-family:'Bricolage Grotesque',sans-serif;font-weight:800}
+.config-banner a{color:white;text-underline-offset:3px}
+.config-banner.hidden{display:none}
+
+/* ── STATUS BADGE ── */
+.status-badge{position:fixed;top:70px;right:1rem;z-index:200;display:flex;align-items:center;gap:.5rem;background:var(--pd);border:1.5px solid rgba(255,255,255,.15);border-radius:20px;padding:.35rem .8rem;font-size:.72rem;font-weight:600;letter-spacing:.04em;transition:all .3s}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#ccc;flex-shrink:0;transition:background .3s}
+.status-badge.connected .status-dot{background:#4caf50;animation:pulse-dot 2s infinite}
+.status-badge.connected{border-color:rgba(76,175,80,.3)}
+.status-badge.error .status-dot{background:#E84855}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── LOADER OVERLAY ── */
+.loader{position:fixed;inset:0;background:var(--pd);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;transition:opacity .4s}
+.loader.hidden{opacity:0;pointer-events:none}
+.loader-ring{width:44px;height:44px;border:3px solid rgba(255,214,0,.2);border-top-color:var(--y);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.9rem;color:rgba(255,255,255,.5);letter-spacing:.06em}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;overflow:hidden;background:var(--pd)}
+.hero-blob{position:absolute;border-radius:50%;pointer-events:none}
+.b1{top:-100px;right:-80px;width:500px;height:500px;background:var(--y);opacity:.08}
+.b2{bottom:-120px;left:-100px;width:400px;height:400px;background:var(--pl);opacity:.18}
+.htag{display:inline-block;background:var(--y);color:var(--pd);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.4rem 1rem;border-radius:2px;margin-bottom:1.5rem;position:relative;z-index:1}
+.heyebrow{font-size:.88rem;color:var(--y);letter-spacing:.08em;text-transform:uppercase;font-weight:500;margin-bottom:.5rem;position:relative;z-index:1}
+.hero h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(3rem,8vw,6rem);font-weight:800;line-height:.95;position:relative;z-index:1;margin-bottom:.5rem}
+.hero h1 .hl{color:var(--y);display:block}
+.hero-sub{font-size:clamp(1rem,2.5vw,1.2rem);color:rgba(255,255,255,.6);max-width:520px;margin:1.2rem auto 2.5rem;line-height:1.65;position:relative;z-index:1}
+.hmeta{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem;position:relative;z-index:1}
+.hmeta-item{display:flex;align-items:center;gap:.5rem;font-size:.88rem;color:rgba(255,255,255,.65)}
+.dot8{width:8px;height:8px;border-radius:50%;background:var(--y);display:inline-block;flex-shrink:0}
+.hero-cta{display:inline-block;background:var(--y);color:var(--pd);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.05rem;padding:1rem 2.5rem;border-radius:3px;border:none;cursor:pointer;transition:transform .15s,background .15s;position:relative;z-index:1}
+.hero-cta:hover{transform:translateY(-2px);background:var(--yd)}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:1;animation:bounce 2s infinite;opacity:.4;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+/* ── TIMER ── */
+.timer-banner{background:var(--y);color:var(--pd);display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:.9rem 2rem;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.tlabel{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase}
+.tdisp{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.8rem;letter-spacing:.05em;min-width:80px;text-align:center;transition:color .3s}
+.tbtns{display:flex;gap:.5rem}
+.tbtn{background:var(--pd);color:var(--y);border:none;border-radius:3px;padding:.4rem 1rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.78rem;cursor:pointer;letter-spacing:.04em}
+.tbtn:hover{opacity:.8}
+.tprog{flex:1 1 100%;height:4px;background:rgba(74,64,99,.25);border-radius:2px;overflow:hidden;max-width:600px;margin:0 auto}
+.tpbar{height:100%;background:var(--pd);transition:width 1s linear;border-radius:2px}
+
+/* ── GENERIC ── */
+section{padding:5rem 1.5rem}
+.inner{max-width:960px;margin:0 auto}
+.slabel{display:inline-block;background:var(--y);color:var(--pd);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:.8rem}
+.slabel.dk{background:rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
+.sh2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2rem,4.5vw,3rem);line-height:1.1;margin-bottom:1rem}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── BRIEF ── */
+.brief-section{background:#0a0812;padding:0;overflow:hidden}
+.breaking-bar{background:#E84855;color:white;display:flex;align-items:center;gap:1rem;padding:.6rem 1.5rem;font-size:.82rem;font-weight:700;letter-spacing:.06em;overflow:hidden}
+.breaking-tag{background:white;color:#E84855;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.7rem;letter-spacing:.12em;padding:.2rem .6rem;border-radius:1px;flex-shrink:0}
+.breaking-scroll{white-space:nowrap;animation:ticker 22s linear infinite}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.brief-hero{position:relative;min-height:85vh;display:flex;align-items:center;justify-content:center;padding:4rem 1.5rem;overflow:hidden}
+.crisis-visual{position:absolute;inset:0;z-index:0;overflow:hidden}
+.cv-base{position:absolute;inset:0;background:linear-gradient(160deg,#020c18 0%,#041e35 40%,#061524 100%)}
+.cv-glow1{position:absolute;top:20%;left:15%;width:300px;height:300px;background:radial-gradient(circle,rgba(30,100,200,.45) 0%,transparent 70%);border-radius:50%}
+.cv-glow2{position:absolute;bottom:10%;right:10%;width:250px;height:250px;background:radial-gradient(circle,rgba(0,180,160,.2) 0%,transparent 70%);border-radius:50%}
+.cv-glow3{position:absolute;top:40%;right:20%;width:180px;height:180px;background:radial-gradient(circle,rgba(20,80,160,.35) 0%,transparent 70%);border-radius:50%}
+.cv-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,214,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,214,0,.04) 1px,transparent 1px);background-size:60px 60px}
+.cv-scan{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(30,140,255,.8),transparent);animation:scanline 4s linear infinite}
+@keyframes scanline{0%{top:0}100%{top:100%}}
+.cv-node{position:absolute;background:rgba(10,8,18,.85);border:1px solid rgba(30,140,255,.4);border-radius:4px;padding:.6rem 1rem;font-size:.78rem;color:rgba(255,255,255,.8);backdrop-filter:blur(4px)}
+.cv-node.n1{top:12%;left:5%;animation:floatA 6s ease-in-out infinite}
+.cv-node.n2{top:20%;right:6%;animation:floatB 7s ease-in-out infinite}
+.cv-node.n3{bottom:18%;left:8%;animation:floatA 8s ease-in-out infinite 1s}
+.cv-node.n4{bottom:25%;right:5%;animation:floatB 5s ease-in-out infinite .5s}
+.cv-node strong{color:#E84855;display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;font-weight:800;line-height:1}
+@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.cv-trending{position:absolute;top:10%;right:5%;background:rgba(10,8,18,.9);border:1px solid rgba(255,214,0,.25);border-radius:4px;padding:.8rem 1.1rem;width:200px;display:none}
+@media(min-width:700px){.cv-trending{display:block}}
+.cv-trending .tr-title{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.6rem}
+.cv-trending .tr-item{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.78rem;color:rgba(255,255,255,.7)}
+.cv-trending .tr-item:last-child{border-bottom:none}
+.cv-wave{position:absolute;bottom:0;left:0;right:0;height:180px;overflow:hidden;z-index:1}
+.cv-wave svg{position:absolute;bottom:0;width:200%;animation:wavemove 8s linear infinite}
+.cv-wave svg.w2{animation:wavemove 12s linear infinite reverse;opacity:.5}
+@keyframes wavemove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cv-house{position:absolute;bottom:120px;font-size:2rem;opacity:.35;animation:floatA 7s ease-in-out infinite}
+.cv-house.h1{left:12%}.cv-house.h2{left:35%;animation-delay:1.5s;bottom:90px;opacity:.2}
+.cv-house.h3{right:25%;animation-delay:3s;bottom:100px}
+.two-angles{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2.5rem 0}
+@media(max-width:600px){.two-angles{grid-template-columns:1fr}}
+.angle-card{border-radius:4px;padding:1.5rem;position:relative;overflow:hidden}
+.angle-card.urgent{background:rgba(232,72,85,.12);border:1.5px solid rgba(232,72,85,.35)}
+.angle-card.ecolo{background:rgba(30,180,100,.1);border:1.5px solid rgba(30,180,100,.3)}
+.angle-icon{font-size:2rem;margin-bottom:.8rem;display:block}
+.angle-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:.5rem}
+.angle-card.urgent .angle-title{color:#E84855}
+.angle-card.ecolo .angle-title{color:#4caf50}
+.angle-queries{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.8rem}
+.angle-queries li{font-size:.78rem;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:3px;padding:.35rem .6rem;font-style:italic}
+.angle-cta{display:inline-block;margin-top:.8rem;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px}
+.angle-card.urgent .angle-cta{background:rgba(232,72,85,.2);color:#E84855}
+.angle-card.ecolo .angle-cta{background:rgba(76,175,80,.15);color:#66bb6a}
+
+.tr-rank{color:var(--y);font-weight:700;font-size:.82rem;width:16px;flex-shrink:0}
+.brief-content{position:relative;z-index:2;text-align:center;max-width:760px}
+.brief-alert{display:inline-flex;align-items:center;gap:.6rem;background:rgba(232,72,85,.15);border:1.5px solid rgba(232,72,85,.5);border-radius:3px;padding:.5rem 1.1rem;font-size:.8rem;font-weight:600;color:#E84855;margin-bottom:2rem;letter-spacing:.04em}
+.alert-pulse{width:10px;height:10px;background:#E84855;border-radius:50%;animation:apulse 1.2s ease-in-out infinite}
+@keyframes apulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.6}}
+.brief-content h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2.2rem,6vw,4.5rem);line-height:.95;color:white;margin-bottom:1.5rem}
+.brief-content h2 em{color:#E84855;font-style:normal;display:block}
+.brief-content h2 .yel{color:var(--y)}
+.brief-lead{font-size:clamp(1rem,2.5vw,1.25rem);line-height:1.7;color:rgba(255,255,255,.7);max-width:620px;margin:0 auto 2.5rem}
+.brief-lead strong{color:white}
+.stats-bar{display:flex;gap:1px;flex-wrap:wrap}
+.stat-block{flex:1;min-width:180px;background:rgba(255,255,255,.04);border-top:3px solid transparent;padding:1.5rem 1.2rem;text-align:center}
+.stat-block:hover{background:rgba(255,255,255,.07)}
+.stat-block.red{border-top-color:#E84855}.stat-block.yel{border-top-color:var(--y)}.stat-block.ppl{border-top-color:var(--pl)}.stat-block.grn{border-top-color:#4caf50}
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1;margin-bottom:.4rem}
+.stat-block.red .stat-num{color:#E84855}.stat-block.yel .stat-num{color:var(--y)}.stat-block.ppl .stat-num{color:#9c8fc0}.stat-block.grn .stat-num{color:#66bb6a}
+.stat-label{font-size:.82rem;color:rgba(255,255,255,.5);line-height:1.4}
+.stat-src{font-size:.68rem;color:rgba(255,255,255,.25);margin-top:.4rem}
+.narrative-section{background:#100c1e;padding:4rem 1.5rem}
+.narrative-inner{max-width:800px;margin:0 auto}
+.narrative-kicker{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:2rem;display:flex;align-items:center;gap:.8rem}
+.narrative-kicker::before,.narrative-kicker::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.narrative-p{font-size:clamp(1rem,2vw,1.15rem);line-height:1.8;color:rgba(255,255,255,.7);margin-bottom:1.5rem}
+.narrative-p strong{color:white}
+.narrative-p .red{color:#E84855;font-weight:700}.narrative-p .yel{color:var(--y);font-weight:700}
+.crisis-timeline{margin:3rem 0;display:flex;flex-direction:column}
+.ct-item{display:flex;gap:1.5rem;align-items:flex-start;padding:1.2rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.ct-item:last-child{border-bottom:none}
+.ct-time{flex-shrink:0;width:60px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.78rem;color:rgba(255,255,255,.3);padding-top:.15rem}
+.ct-dot{flex-shrink:0;width:12px;height:12px;border-radius:50%;margin-top:.2rem}
+.ct-dot.red{background:#E84855;box-shadow:0 0 8px rgba(232,72,85,.5)}.ct-dot.yel{background:var(--y);box-shadow:0 0 8px rgba(255,214,0,.4)}.ct-dot.gray{background:rgba(255,255,255,.2)}
+.ct-body{flex:1}
+.ct-body strong{display:block;color:white;font-size:.95rem;margin-bottom:.2rem}
+.ct-body span{font-size:.83rem;color:rgba(255,255,255,.5);line-height:1.5}
+.challenge-section{background:#0a0812;padding:5rem 1.5rem;border-top:1px solid rgba(255,214,0,.15)}
+.challenge-inner{max-width:860px;margin:0 auto;text-align:center}
+.chal-icon{font-size:3.5rem;margin-bottom:1rem;display:block}
+.chal-h{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;margin-bottom:1.5rem}
+.chal-h .yl{color:var(--y)}
+.chal-body{font-size:clamp(1rem,2vw,1.15rem);color:rgba(255,255,255,.65);line-height:1.8;max-width:680px;margin:0 auto 2.5rem}
+.chal-body strong{color:white}
+.tension-bar{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.tb-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:3px;padding:1rem 1.4rem;text-align:center;min-width:180px}
+.tb-item .tbi-num{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2rem;color:var(--y);display:block}
+.tb-item .tbi-label{font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.4}
+.brief-card{background:rgba(255,214,0,.06);border:2px solid var(--y);border-radius:4px;padding:2.5rem;text-align:left;margin-bottom:2rem;position:relative;overflow:hidden}
+.brief-card::before{content:'MISSION';position:absolute;right:-20px;top:-10px;font-family:'Bricolage Grotesque',sans-serif;font-size:5rem;font-weight:800;color:var(--y);opacity:.06;letter-spacing:.05em;pointer-events:none}
+.brief-card-tag{display:inline-block;background:var(--y);color:var(--pd);font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:1rem}
+.brief-card p{font-size:1.1rem;line-height:1.75;color:rgba(255,255,255,.88);font-style:italic}
+.brief-card p strong{color:var(--y);font-style:normal}
+.brief-cta-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+
+/* ── STEPS ── */
+.steps-section{background:var(--ow);color:var(--td)}
+.steps-section .sh2{color:var(--td)}
+.steps-intro{color:#555;margin-bottom:3rem;max-width:640px;font-size:1rem;line-height:1.6}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem}
+.step-card{border-radius:5px;cursor:pointer;border:2.5px solid transparent;transition:border-color .2s,transform .18s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.step-card:hover{transform:translateY(-4px)}
+.step-card.active{border-color:var(--p)}
+.step-card-top{padding:2rem 1.6rem 1.4rem;position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+.step-card-top::after{content:'';position:absolute;bottom:-20px;right:-20px;width:90px;height:90px;border-radius:50%;opacity:.15}
+.sc1 .step-card-top{background:linear-gradient(135deg,#2e2840,#3d3560)}.sc1 .step-card-top::after{background:var(--s1)}
+.sc2 .step-card-top{background:linear-gradient(135deg,#2e1a0a,#4a2a0e)}.sc2 .step-card-top::after{background:var(--s2)}
+.sc3 .step-card-top{background:linear-gradient(135deg,#2e0a0e,#4a1018)}.sc3 .step-card-top::after{background:var(--s3)}
+.sc4 .step-card-top{background:linear-gradient(135deg,#1a1030,#2e2050)}.sc4 .step-card-top::after{background:var(--s4)}
+.step-num-big{font-family:'Bricolage Grotesque',sans-serif;font-size:4.5rem;font-weight:800;line-height:1;opacity:.25;color:white;position:absolute;bottom:-10px;right:10px;pointer-events:none}
+.step-emoji{font-size:2.2rem;margin-bottom:.6rem;display:block}
+.step-title-card{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.05rem;color:white;position:relative;z-index:1}
+.sc1 .step-title-card{color:var(--s1)}.sc2 .step-title-card{color:var(--s2)}.sc3 .step-title-card{color:var(--s3)}.sc4 .step-title-card{color:#b8aee0}
+.step-card-bottom{background:white;padding:1.2rem 1.4rem;flex:1}
+.step-desc-card{font-size:.84rem;color:#555;line-height:1.55;margin-bottom:.8rem}
+.step-time-chip{display:inline-block;background:var(--gl);color:var(--p);font-size:.72rem;font-weight:600;padding:.2rem .6rem;border-radius:2px}
+.pdots{display:flex;gap:.5rem;justify-content:center;margin-top:2rem}
+.pdot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,.12);cursor:pointer;transition:all .2s}
+.pdot.active{background:var(--p);transform:scale(1.3)}
+
+/* ── STEP DETAIL ── */
+.detail-section{background:var(--p)}
+.step-detail{display:none;animation:fadeIn .4s ease}
+.step-detail.visible{display:block}
+.sdh{display:flex;align-items:flex-start;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.12);flex-wrap:wrap}
+.sdn{font-family:'Bricolage Grotesque',sans-serif;font-size:5rem;font-weight:800;line-height:1;flex-shrink:0}
+.sdi h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:.4rem}
+.sdi p{color:rgba(255,255,255,.55);font-size:1rem;line-height:1.55}
+.tasks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;margin-bottom:2.5rem}
+.task-card{background:rgba(255,255,255,.07);border-radius:4px;padding:1.5rem;border:1px solid rgba(255,255,255,.1);transition:background .2s}
+.task-card:hover{background:rgba(255,255,255,.12)}
+.tci{font-size:1.5rem;margin-bottom:.8rem}
+.task-card h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.5rem}
+.task-card p{font-size:.87rem;color:rgba(255,255,255,.6);line-height:1.55}
+.snav{display:flex;justify-content:space-between;align-items:center;margin-top:1rem}
+.snav .pv{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.55);font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.83rem;padding:.65rem 1.4rem;border-radius:3px;cursor:pointer;transition:all .15s}
+.snav .pv:hover{border-color:white;color:white}
+.snav .nx{background:var(--y);color:var(--pd);border:none;border-radius:3px;padding:.75rem 1.8rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;transition:all .15s}
+.snav .nx:hover{background:var(--yd);transform:translateY(-1px)}
+
+/* ── TOOLS ── */
+.tools-section{background:var(--td);color:white}
+.tools-section .sh2{color:white}
+.tools-intro{color:rgba(255,255,255,.5);margin-bottom:2rem;max-width:600px;line-height:1.65;font-size:.95rem}
+.ttabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+.ttab{padding:.5rem 1.1rem;border-radius:2px;border:2px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.ttab.active,.ttab:hover{background:var(--y);border-color:var(--y);color:var(--pd)}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.flip-wrap{height:330px;perspective:1000px;cursor:pointer}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.flip-wrap:hover .flip-inner,.flip-wrap.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-front,.flip-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:5px;overflow:hidden}
+.flip-front{background:var(--pd);border:1.5px solid rgba(255,255,255,.1);padding:1.4rem;display:flex;flex-direction:column}
+.flip-back{background:var(--p);border:1.5px solid var(--y);padding:1.4rem;transform:rotateY(180deg);display:flex;flex-direction:column;gap:.4rem;overflow-y:auto}
+.tool-logo{font-size:1.8rem;margin-bottom:.5rem}
+.tool-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.05rem;color:white;margin-bottom:.2rem}
+.tool-cat{font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.6rem}
+.tool-use{font-size:.83rem;color:rgba(255,255,255,.65);line-height:1.55;flex:1}
+.tool-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.8rem}
+.chip{display:inline-block;font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:2px;letter-spacing:.04em}
+.chip.free{background:rgba(76,175,80,.2);color:#81c784}.chip.fm{background:rgba(255,193,7,.15);color:#ffd54f}.chip.pd{background:rgba(232,72,85,.15);color:#ef9a9a}
+.flip-hint{font-size:.68rem;color:rgba(255,255,255,.22);text-align:right;margin-top:.6rem;letter-spacing:.06em}
+.fb-label{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--y);margin-bottom:.3rem}
+.fb-steps{list-style:none;display:flex;flex-direction:column;gap:.4rem;flex:1}
+.fb-steps li{font-size:.8rem;color:rgba(255,255,255,.78);line-height:1.45;display:flex;gap:.5rem}
+.fb-steps li::before{content:attr(data-n);color:var(--y);font-weight:700;font-size:.75rem;flex-shrink:0;min-width:16px}
+.fb-prompt{background:rgba(0,0,0,.35);border-left:2px solid var(--y);padding:.55rem .75rem;font-size:.74rem;color:rgba(255,255,255,.7);line-height:1.5;border-radius:0 3px 3px 0;font-family:monospace;margin-top:.3rem;cursor:pointer;position:relative;transition:background .2s}
+.fb-prompt:hover{background:rgba(0,0,0,.55)}
+.copy-hint{position:absolute;top:.25rem;right:.4rem;font-size:.6rem;color:rgba(255,255,255,.28);font-family:'DM Sans',sans-serif}
+.fb-back-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;margin-bottom:.2rem}
+
+/* ── COORD ── */
+.coord-section{background:var(--ow);color:var(--td)}
+.coord-section .sh2{color:var(--td)}
+.coord-intro{color:#555;margin-bottom:2rem;font-size:.98rem;line-height:1.65;max-width:700px}
+.mode-picker{display:flex;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.mode-btn{flex:1;min-width:200px;background:white;border:2.5px solid var(--gl);border-radius:4px;padding:1.4rem;cursor:pointer;transition:all .2s;text-align:left}
+.mode-btn:hover{border-color:var(--p)}.mode-btn.sel{border-color:var(--p);background:#f0edf8}
+.mode-icon{font-size:1.8rem;margin-bottom:.5rem}
+.mode-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;color:var(--td);margin-bottom:.3rem}
+.mode-desc{font-size:.82rem;color:#666;line-height:1.45}
+.mode-check{display:none;width:20px;height:20px;background:var(--p);border-radius:50%;float:right;align-items:center;justify-content:center;color:white;font-size:.7rem}
+.mode-btn.sel .mode-check{display:flex}
+.groups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.gcard{background:white;border-radius:4px;border:2px solid var(--gl);padding:1.4rem;transition:all .2s}
+.gcard.claimed{border-color:var(--p);background:#f5f3ff}
+.gnum{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.8rem;color:var(--p);margin-bottom:.5rem;line-height:1}
+.gi{width:100%;border:1.5px solid var(--gl);border-radius:3px;padding:.5rem .7rem;font-family:'DM Sans',sans-serif;font-size:.88rem;color:var(--td);outline:none;margin-bottom:.7rem;transition:border-color .2s;background:white;display:block}
+.gi:focus{border-color:var(--p)}
+.claim-btn{width:100%;background:var(--p);color:white;border:none;border-radius:3px;padding:.7rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.83rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+.claim-btn:hover{opacity:.85}
+.claim-btn:disabled{opacity:.4;cursor:not-allowed}
+.cbadge{display:none;background:var(--p);color:white;font-size:.7rem;font-weight:700;padding:.2rem .5rem;border-radius:2px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.5rem}
+.gcard.claimed .cbadge{display:inline-block}
+.gcause-disp{font-size:.8rem;color:var(--pl);font-weight:600;margin-bottom:.25rem}
+.gsteps-disp{font-size:.78rem;color:#888}
+
+/* ── UPLOAD ── */
+.upload-section{background:var(--pd)}
+.upload-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.ucard{background:rgba(255,255,255,.04);border-radius:4px;padding:2rem;border:2px dashed rgba(255,214,0,.25);transition:border-color .2s}
+.ucard:hover{border-color:rgba(255,214,0,.55)}
+.ubadge{display:inline-block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:.9rem}
+.b1{background:var(--s1);color:var(--pd)}.b2{background:var(--s2);color:white}.b3{background:var(--s3);color:white}.b4{background:var(--s4);color:white}
+.ucard h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.9rem}
+.fg{margin-bottom:.8rem}
+.fg label{display:block;font-size:.72rem;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.3rem}
+.fg input,.fg select,.fg textarea{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:3px;padding:.55rem .75rem;color:white;font-family:'DM Sans',sans-serif;font-size:.87rem;outline:none;transition:border-color .2s;resize:vertical}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--y)}
+.fg select option{background:var(--pd)}
+.sub-btn{width:100%;background:var(--y);color:var(--pd);border:none;border-radius:3px;padding:.8rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.86rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.sub-btn:hover{background:var(--yd);transform:translateY(-1px)}
+.sub-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* ── GALLERY ── */
+.gallery-section{background:var(--ow);color:var(--td)}
+.gallery-section .sh2{color:var(--td)}
+.gallery-section .gsub{color:#666;margin-bottom:1.5rem;font-size:.95rem}
+.vote-how{background:rgba(74,64,99,.08);border:1.5px solid rgba(74,64,99,.2);border-radius:4px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:.85rem;color:#444;line-height:1.6}
+.vote-how strong{color:var(--p)}
+.gtabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+.gtab{padding:.45rem 1.1rem;border-radius:2px;border:2px solid var(--p);background:transparent;color:var(--p);font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.gtab.active,.gtab:hover{background:var(--p);color:white}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem}
+.gitem{background:white;border-radius:4px;overflow:hidden;border:1.5px solid var(--gl);transition:transform .2s;animation:fadeIn .3s ease}
+.gitem:hover{transform:translateY(-3px)}
+.gthumb{height:120px;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:2.5rem;color:var(--y);position:relative;overflow:hidden}
+.gthumb::after{content:'';position:absolute;bottom:-15px;right:-15px;width:70px;height:70px;background:var(--y);border-radius:50%;opacity:.12}
+.gbody{padding:1.1rem}
+.gbody h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.9rem;color:var(--td);margin-bottom:.2rem}
+.gbody .gorg{font-size:.76rem;color:#999;margin-bottom:.3rem}
+.gbody .gcause{font-size:.73rem;color:var(--pl);font-weight:600;margin-bottom:.5rem}
+.gstag{display:inline-block;font-size:.66rem;font-weight:600;padding:.2rem .45rem;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}
+.ts1{background:#FFF8C0;color:#8A7000}.ts2{background:#FFF0E8;color:#C05020}.ts3{background:#FFE8EA;color:#A02030}.ts4{background:#EAE8F5;color:var(--p)}
+.vote-row{display:flex;gap:.4rem;margin-top:.5rem}
+.vbtn{flex:1;background:var(--gl);border:1.5px solid transparent;border-radius:3px;padding:.45rem .3rem;font-size:.7rem;font-weight:600;color:#555;cursor:pointer;transition:all .2s;text-align:center;line-height:1.25}
+.vbtn:hover{background:var(--p);color:white;border-color:var(--p)}
+.vbtn.voted{background:var(--p);color:white;border-color:var(--p)}
+.vc{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;margin-bottom:.05rem}
+.vlbl{display:block;font-size:.6rem;letter-spacing:.04em;text-transform:uppercase}
+
+/* ── LEADERBOARD ── */
+.lb-section{background:var(--p)}
+.lb-section .sh2{color:white}
+.lb-intro{color:rgba(255,255,255,.5);margin-bottom:2rem;font-size:.93rem;line-height:1.6}
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{text-align:left;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:.55rem .75rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.lb-table td{padding:.75rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.88rem;vertical-align:middle}
+.lb-rank{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.4rem;color:rgba(255,255,255,.18)}
+.lb-rank.r1{color:var(--y)}.lb-rank.r2{color:#ccc}.lb-rank.r3{color:#cd7f32}
+.lb-score{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.1rem;color:var(--y)}
+.lb-bar{height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-top:.3rem}
+.lb-bfill{height:100%;background:var(--y);border-radius:3px;transition:width .6s ease}
+.lb-empty{text-align:center;padding:3rem;color:rgba(255,255,255,.25);font-size:.9rem}
+
+/* ── REALTIME PULSE ── */
+.rt-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(76,175,80,.12);border:1px solid rgba(76,175,80,.3);border-radius:20px;padding:.25rem .7rem;font-size:.72rem;color:#81c784;font-weight:600;margin-bottom:1.5rem}
+.rt-dot{width:7px;height:7px;background:#4caf50;border-radius:50%;animation:pulse-dot 2s infinite}
+
+/* ── NOTIF ── */
+.notif{position:fixed;bottom:2rem;right:2rem;background:var(--pd);border:2px solid var(--y);border-radius:4px;padding:1rem 1.5rem;font-size:.86rem;z-index:999;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:290px}
+.notif.show{transform:translateY(0);opacity:1}
+.notif strong{color:var(--y);display:block;margin-bottom:.15rem;font-family:'Bricolage Grotesque',sans-serif;font-weight:700}
+
+/* ── FOOTER ── */
+.footer{background:var(--pd);padding:2rem;text-align:center;border-top:3px solid var(--y)}
+.footer-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;color:var(--y);margin-bottom:.35rem}
+.footer-tag{font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+
+<!-- ══ LOADER ══ -->
+<div class="loader" id="loader">
+  <div class="loader-ring"></div>
+  <div class="loader-text">Connexion en cours…</div>
+</div>
+
+<!-- ══ STATUS BADGE ══ -->
+<div class="status-badge" id="status-badge">
+  <span class="status-dot"></span>
+  <span id="status-text">Connexion…</span>
+</div>
+
+<!-- ══ CONFIG BANNER — disparaît quand les clés sont renseignées ══ -->
+<div class="config-banner" id="config-banner">
+  <strong>⚙️ Configuration requise :</strong>
+  Remplacez <code>VOTRE_URL</code> et <code>VOTRE_ANON_KEY</code> dans le code (ligne 2 du script) avec vos clés Supabase.
+  <a href="https://supabase.com/dashboard" target="_blank">→ Ouvrir Supabase</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="top">
+  <div class="hero-blob b1"></div><div class="hero-blob b2"></div>
+  <div class="htag">Masterclass Growth Hacking · Partie 3</div>
+  <div class="heyebrow">#AFFSEMINAIRE · Juin 2026</div>
+  <h1>Le Sprint<br><span class="hl">de Crise</span></h1>
+  <p class="hero-sub">1h30 pour passer de témoin à référence. Vous allez construire une machine de collecte complète — de l'attention au don récurrent.</p>
+  <div class="hmeta">
+    <div class="hmeta-item"><span class="dot8"></span>6 groupes · 5 participants</div>
+    <div class="hmeta-item"><span class="dot8"></span>4 étapes · 90 minutes</div>
+    <div class="hmeta-item"><span class="dot8"></span>3 restitutions de 10 min</div>
+  </div>
+  <button class="hero-cta" onclick="s2('brief')">Découvrir la crise ↓</button>
+  <div class="hero-scroll"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="6 9 12 15 18 9"/></svg>Scroll</div>
+</section>
+
+<!-- ══ TIMER ══ -->
+<div class="timer-banner">
+  <span class="tlabel">⏱ Chrono</span>
+  <span class="tdisp" id="tdisplay">1:30:00</span>
+  <div class="tbtns">
+    <button class="tbtn" onclick="startTimer()">▶ Start</button>
+    <button class="tbtn" onclick="pauseTimer()">⏸ Pause</button>
+    <button class="tbtn" onclick="resetTimer()">↺ Reset</button>
+  </div>
+  <div class="tprog"><div class="tpbar" id="tbar" style="width:100%"></div></div>
+</div>
+
+<!-- ══ BRIEF ══ -->
+<div class="breaking-bar" id="brief">
+  <span class="breaking-tag">🔴 BREAKING</span>
+  <div class="breaking-scroll">Inondations majeures : 12 départements en alerte rouge &nbsp;·&nbsp; Des milliers de sinistrés cherchent des solutions sur les IA &nbsp;·&nbsp; 5,4M de logements exposés en France &nbsp;·&nbsp; Qui sera la voix de référence pour les victimes et pour les acteurs du changement ? &nbsp;·&nbsp; Inondations majeures : 12 départements en alerte rouge &nbsp;·&nbsp; Des milliers de sinistrés cherchent des solutions sur les IA &nbsp;·&nbsp; 5,4M de logements exposés en France &nbsp;·&nbsp; Qui sera la voix de référence pour les victimes et pour les acteurs du changement ? &nbsp;·&nbsp;</div>
+</div>
+
+<div class="brief-hero">
+  <div class="crisis-visual">
+    <div class="cv-base"></div><div class="cv-glow1"></div><div class="cv-glow2"></div><div class="cv-glow3"></div><div class="cv-grid"></div><div class="cv-scan"></div>
+    <div class="cv-node n1"><strong>17 600</strong>communes en zone inondable<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">France · Géorisques 2026</span></div>
+    <div class="cv-node n2"><strong>3,8M</strong>recherches Google en 48h<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">pic national · Trends</span></div>
+    <div class="cv-node n3"><strong>68%</strong>des sinistrés : <em style="color:#4fc3f7">"je ne sais pas vers qui me tourner"</em><br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">Sondage IFOP 2026</span></div>
+    <div class="cv-node n4"><strong>5,4M</strong>logements exposés aux crues<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">France métro · Géorisques</span></div>
+    <div class="cv-wave">
+      <svg viewBox="0 0 1440 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:180px"><path d="M0,80 C360,140 720,20 1080,80 C1260,110 1350,60 1440,80 L1440,180 L0,180 Z" fill="rgba(20,80,200,.25)"/><path d="M0,100 C360,160 720,40 1080,100 C1260,130 1350,80 1440,100 L1440,180 L0,180 Z" fill="rgba(10,60,160,.35)"/></svg>
+      <svg viewBox="0 0 1440 180" class="w2" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:180px"><path d="M0,90 C400,30 800,150 1200,90 C1320,60 1380,110 1440,90 L1440,180 L0,180 Z" fill="rgba(30,100,220,.2)"/></svg>
+    </div>
+    <div class="cv-house h1">🏠</div>
+    <div class="cv-house h2">🏡</div>
+    <div class="cv-house h3">🏘️</div>
+    <div class="cv-trending">
+      <div class="tr-title">🔥 Trending maintenant</div>
+      <div class="tr-item"><span class="tr-rank">1</span>"aide sinistré inondation"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">2</span>"relogement urgence crue"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">3</span>"association sans abri flood"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">4</span>"comment prévenir inondation"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+    </div>
+  </div>
+  <div class="brief-content">
+    <div class="brief-alert"><span class="alert-pulse"></span>ALERTE ROUGE — 12 DÉPARTEMENTS — MAJ IL Y A 3 MIN</div>
+    <h2>Les eaux montent.<br><em>Les gens cherchent une bouée.</em><br><span class="yel">Qui sera trouvé ?</span></h2>
+    <p class="brief-lead">Cette nuit, des crues majeures ont touché le quart sud de la France. <strong>Des milliers de personnes ont tout perdu.</strong> D'autres, déjà précaires, voient leur situation basculer. En quelques heures, les recherches explosent. Les sinistrés sont perdus. Les IA renvoient vers… personne de fiable.</p>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-block red"><div class="stat-num">+320%</div><div class="stat-label">de recherches "aide sinistré inondation" en 24h</div><div class="stat-src">Google Trends · France 2026</div></div>
+  <div class="stat-block yel"><div class="stat-num">5,4M</div><div class="stat-label">logements en zone inondable en France métropolitaine</div><div class="stat-src">Géorisques · Ministère de la Transition</div></div>
+  <div class="stat-block ppl"><div class="stat-num">2 publics</div><div class="stat-label">les sinistrés immédiats ET les citoyens engagés pour le long terme</div><div class="stat-src">Deux discours, deux tunnels à construire</div></div>
+  <div class="stat-block grn"><div class="stat-num">0</div><div class="stat-label">association citée comme référence par les IA sur la crise en cours</div><div class="stat-src">Test ChatGPT · Perplexity · Gemini</div></div>
+</div>
+
+<div class="narrative-section">
+  <div class="narrative-inner">
+    <div class="narrative-kicker">Le contexte · Ce qui se passe vraiment</div>
+    <p class="narrative-p">Des sinistrés ouvrent leur téléphone depuis un gymnase d'accueil à 2h du matin et tapent : <em style="color:rgba(255,255,255,.9)">"comment me reloger après inondation aide urgente"</em>. L'IA répond avec des liens vers des pages gouvernementales génériques. <span class="red">Aucune association de terrain n'est citée.</span></p>
+    <p class="narrative-p">À côté d'eux, des milliers de citoyens non touchés mais bouleversés cherchent autre chose : <em style="color:rgba(255,255,255,.9)">"comment agir contre les inondations à long terme"</em>, <em style="color:rgba(255,255,255,.9)">"association lutte changement climatique dons"</em>. <strong>Ce sont deux publics, deux urgences, deux tunnels de conversion différents</strong> — et personne ne les capte encore.</p>
+    <p class="narrative-p">Ce n'est pas une question de budget. C'est une question de <strong>vitesse, de méthode et de positionnement</strong>. <span class="yel">La fenêtre d'attention dure 48 à 72h. Celui qui structure l'information en premier — pour l'urgentiste ET pour l'engagé long terme — captera une audience pour des années.</span></p>
+
+    <div class="two-angles">
+      <div class="angle-card urgent">
+        <span class="angle-icon">🆘</span>
+        <div class="angle-title">Discours urgentiste</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.5">Pour les sinistrés et leurs proches. Besoin de réponses <strong style="color:white">ce soir</strong>. Court terme, actionnable, rassurant.</p>
+        <ul class="angle-queries">
+          <li>"aide relogement sinistré inondation"</li>
+          <li>"droits locataire après inondation"</li>
+          <li>"association aide d'urgence crue"</li>
+        </ul>
+        <span class="angle-cta">⏱ Tunnel don d'urgence → 24h</span>
+      </div>
+      <div class="angle-card ecolo">
+        <span class="angle-icon">🌍</span>
+        <div class="angle-title">Discours écologique</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.5">Pour les citoyens révoltés qui veulent <strong style="color:white">agir sur les causes</strong>. Long terme, structurel, engageant.</p>
+        <ul class="angle-queries">
+          <li>"comment lutter contre les inondations"</li>
+          <li>"association dérèglement climatique don"</li>
+          <li>"prévention risques naturels bénévole"</li>
+        </ul>
+        <span class="angle-cta">♾️ Tunnel donateur régulier → long terme</span>
+      </div>
+    </div>
+    <div class="crisis-timeline">
+      <div class="ct-item"><div class="ct-time">J·0<br>05:00</div><div class="ct-dot red"></div><div class="ct-body"><strong>Premières images des crues sur les réseaux</strong><span>Vidéos de rues submergées partagées massivement. Premier pic de recherche. Les médias ne réagissent pas encore.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·0<br>12:00</div><div class="ct-dot yel"></div><div class="ct-body"><strong>Alerte rouge étendue à 12 départements</strong><span>La presse nationale couvre. Deuxième pic de recherche ×4. Les gens cherchent "que faire concrètement" — et ne trouvent que de l'institutionnel.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·0<br>20:00</div><div class="ct-dot yel"></div><div class="ct-body"><strong>Témoignages de sinistrés viraux — et premières questions clima</strong><span>Deux fils narratifs émergent en parallèle : l'urgence humaine immédiate ET la colère écologique. La fenêtre d'engagement est grande ouverte sur les deux fronts.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·1<br>09:00</div><div class="ct-dot" style="background:var(--y);box-shadow:0 0 10px rgba(255,214,0,.6)"></div><div class="ct-body"><strong>⚠️ Vous êtes ici — C'est maintenant</strong><span>Le sujet tient encore 48 à 72h avant de disparaître de l'actu. La fenêtre est ouverte sur les deux discours.</span></div></div>
+      <div class="ct-item" style="opacity:.35"><div class="ct-time">J·3</div><div class="ct-dot gray"></div><div class="ct-body"><strong>La fenêtre se ferme</strong><span>L'algorithme passe à autre chose. Ceux qui ont capté leads urgentistes ET engagés long terme auront une base durable. Les autres, rien.</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="challenge-section">
+  <div class="challenge-inner">
+    <span class="chal-icon">🎯</span>
+    <h2 class="chal-h">Votre défi :<br><span class="yl">parler à deux publics,</span><br>capturer les deux</h2>
+    <p class="chal-body">D'un côté : des sinistrés en détresse qui ont besoin d'une réponse <strong>ce soir</strong>. De l'autre : des citoyens révoltés qui veulent <strong>s'engager sur le long terme</strong>. Votre asso peut parler aux deux — avec le même tunnel, deux entrées différentes. C'est ce que vous allez construire en <strong>90 minutes</strong>.</p>
+    <div class="tension-bar">
+      <div class="tb-item"><span class="tbi-num">90</span><span class="tbi-label">minutes · 2 tunnels à construire</span></div>
+      <div class="tb-item"><span class="tbi-num">4</span><span class="tbi-label">étapes du tunnel complet</span></div>
+      <div class="tb-item"><span class="tbi-num">6</span><span class="tbi-label">équipes en compétition</span></div>
+    </div>
+    <div class="brief-card">
+      <span class="brief-card-tag">📋 Votre mission</span>
+      <p>Des inondations majeures frappent la France. <strong>Deux publics cherchent des réponses sur les IA et les moteurs de recherche</strong> : les sinistrés en urgence immédiate, et les citoyens qui veulent agir contre le dérèglement climatique. Votre défi : <strong>être la référence pour les deux</strong>, capter leurs contacts et transformer l'émotion du moment en engagement durable.</p>
+    </div>
+    <div class="brief-cta-row">
+      <button class="hero-cta" onclick="s2('steps')">Voir les 4 étapes →</button>
+      <button class="hero-cta" style="background:rgba(255,255,255,.1);color:white" onclick="s2('tools')">Boîte à outils →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ STEPS ══ -->
+<section class="steps-section" id="steps">
+  <div class="inner">
+    <span class="slabel">Le Parcours</span>
+    <h2 class="sh2">4 étapes · 4 leviers de croissance</h2>
+    <p class="steps-intro">Votre groupe peut se concentrer sur <strong>1 ou 2 étapes</strong> pour aller en profondeur, ou couvrir <strong>les 4 en sprint</strong> en se répartissant les tâches. Cliquez pour voir le détail.</p>
+    <div class="steps-grid">
+      <div class="step-card sc1" onclick="showStep(1)" id="stab1"><div class="step-card-top"><span class="step-emoji">🤖</span><div class="step-title-card">Devenir la référence IA</div><div class="step-num-big">01</div></div><div class="step-card-bottom"><p class="step-desc-card">Construire du contenu conçu pour être cité par ChatGPT et Google comme LA source qui fait autorité.</p><span class="step-time-chip">⏱ ~25 min</span></div></div>
+      <div class="step-card sc2" onclick="showStep(2)" id="stab2"><div class="step-card-top"><span class="step-emoji">🧲</span><div class="step-title-card">Crochet & Capture</div><div class="step-num-big">02</div></div><div class="step-card-bottom"><p class="step-desc-card">Lead magnet irrésistible et parcours pour transformer un visiteur anonyme en contact qualifié.</p><span class="step-time-chip">⏱ ~25 min</span></div></div>
+      <div class="step-card sc3" onclick="showStep(3)" id="stab3"><div class="step-card-top"><span class="step-emoji">✉️</span><div class="step-title-card">Boucle CRM</div><div class="step-num-big">03</div></div><div class="step-card-bottom"><p class="step-desc-card">3 emails, un déclencheur comportemental — de la livraison du contenu jusqu'à l'appel au don.</p><span class="step-time-chip">⏱ ~20 min</span></div></div>
+      <div class="step-card sc4" onclick="showStep(4)" id="stab4"><div class="step-card-top"><span class="step-emoji">♾️</span><div class="step-title-card">Fidélisation</div><div class="step-num-big">04</div></div><div class="step-card-bottom"><p class="step-desc-card">Preuve d'impact, don mensuel, parrainage : le donateur ponctuel devient ambassadeur récurrent.</p><span class="step-time-chip">⏱ ~20 min</span></div></div>
+    </div>
+    <div class="pdots"><div class="pdot" id="pd1" onclick="showStep(1)"></div><div class="pdot" id="pd2" onclick="showStep(2)"></div><div class="pdot" id="pd3" onclick="showStep(3)"></div><div class="pdot" id="pd4" onclick="showStep(4)"></div></div>
+  </div>
+</section>
+
+<!-- ══ DETAIL ══ -->
+<section class="detail-section" id="detail-zone">
+  <div class="inner">
+    <div class="step-detail" id="det1"><div class="sdh"><div class="sdn" style="color:var(--s1)">01</div><div class="sdi"><h3>Devenir la référence pour les IA</h3><p>Listez les questions réelles posées pendant la crise et construisez des blocs conçus pour être cités par ChatGPT et Google.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">🔍</div><h4>Le contenu expert</h4><p>Listez les <strong style="color:var(--y)">3 questions précises</strong> que les gens posent à ChatGPT sur votre crise. Pensez intention : pas "inondation" mais "comment me reloger après crue urgence" ou "association contre dérèglement climatique dons".</p></div><div class="task-card"><div class="tci">🏗️</div><h4>Le bloc de réponse 50 mots</h4><p>Rédigez un bloc <strong style="color:var(--y)">hyper structuré de 50 mots</strong> : chiffres, verbes d'action, pas de jargon. Conçu pour être copié-collé par une IA comme réponse de référence.</p></div></div><div class="snav"><span></span><button class="nx" onclick="showStep(2)">Étape 02 →</button></div></div>
+    <div class="step-detail" id="det2"><div class="sdh"><div class="sdn" style="color:var(--s2)">02</div><div class="sdi"><h3>Le Crochet et la Capture</h3><p>Un contenu à forte valeur qui justifie de laisser son email — et le parcours le plus court vers la conversion.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">💎</div><h4>Le lead magnet</h4><p>Imaginez un <strong style="color:var(--y)">contenu gratuit à forte valeur</strong> — guide, infographie, webinaire, kit… En le voyant, la personne doit se dire "j'en ai besoin maintenant".</p></div><div class="task-card"><div class="tci">🛬</div><h4>La landing page</h4><p>3 éléments : la <strong style="color:var(--y)">promesse</strong> (ce qu'ils obtiennent), la <strong style="color:var(--y)">preuve</strong> (pourquoi vous êtes légitimes), l'<strong style="color:var(--y)">action</strong> (un bouton, un champ email).</p></div></div><div class="snav"><button class="pv" onclick="showStep(1)">← Étape 01</button><button class="nx" onclick="showStep(3)">Étape 03 →</button></div></div>
+    <div class="step-detail" id="det3"><div class="sdh"><div class="sdn" style="color:var(--s3)">03</div><div class="sdi"><h3>La Boucle de Conversion CRM</h3><p>3 emails, un déclencheur comportemental précis. De la livraison du contenu jusqu'à l'appel au don.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">✉️</div><h4>Le scénario 3 emails</h4><p><strong style="color:var(--y)">Mail 1 :</strong> livraison + preuve d'impact · <strong style="color:var(--y)">Mail 2 :</strong> témoignage terrain · <strong style="color:var(--y)">Mail 3 :</strong> appel au don. Objet + accroche + CTA pour chaque.</p></div><div class="task-card"><div class="tci">⚡</div><h4>Le déclencheur comportemental</h4><p>Quel <strong style="color:var(--y)">comportement précis</strong> déclenche le mail de don ? Soyez précis : "Si clic sur lien vidéo dans Mail 2 → attendre 60 min → envoyer Mail 3".</p></div></div><div class="snav"><button class="pv" onclick="showStep(2)">← Étape 02</button><button class="nx" onclick="showStep(4)">Étape 04 →</button></div></div>
+    <div class="step-detail" id="det4"><div class="sdh"><div class="sdn" style="color:#9c8fc0">04</div><div class="sdi"><h3>La Boucle de Fidélisation</h3><p>Le don est fait. Transformez ce geste ponctuel en engagement durable et en bouche-à-oreille actif.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">📊</div><h4>La preuve d'impact J+30</h4><p>Message envoyé <strong style="color:var(--y)">30 jours après le don</strong> montrant concrètement l'impact. Mail, vidéo ou SMS — format + contenu + objet.</p></div><div class="task-card"><div class="tci">🔄</div><h4>Le don régulier</h4><p>Mécanique pour passer au <strong style="color:var(--y)">don mensuel</strong> — cercle ambassadeurs, newsletter terrain, avantages exclusifs. L'argument qui fait basculer.</p></div><div class="task-card"><div class="tci">📢</div><h4>Le parrainage viral</h4><p>Inciter à partager à <strong style="color:var(--y)">3 proches</strong> — mécanisme, message, incentive ou émotion. Concret : quoi, quand, comment.</p></div></div><div class="snav"><button class="pv" onclick="showStep(3)">← Étape 03</button><button class="nx" onclick="s2('tools')">Boîte à outils →</button></div></div>
+  </div>
+</section>
+
+<!-- ══ TOOLS ══ -->
+<section class="tools-section" id="tools">
+  <div class="inner">
+    <span class="slabel">Boîte à outils</span>
+    <h2 class="sh2">Outils no code pour aller vite</h2>
+    <p class="tools-intro">Une sélection opinionated — ouvrez en 5 min, sans développeur. <strong style="color:white">Survolez ou cliquez</strong> une carte pour voir le guide pas-à-pas et le prompt à copier.</p>
+    <div class="ttabs">
+      <button class="ttab active" onclick="filterTools('all',this)">Tous</button>
+      <button class="ttab" onclick="filterTools('1',this)">01 · IA</button>
+      <button class="ttab" onclick="filterTools('2',this)">02 · Capture</button>
+      <button class="ttab" onclick="filterTools('3',this)">03 · CRM</button>
+      <button class="ttab" onclick="filterTools('4',this)">04 · Fidélisation</button>
+    </div>
+    <div class="tools-grid">
+      <!-- S1 -->
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🤖</div><div class="tool-name">Claude / ChatGPT</div><div class="tool-cat">Étape 01 · Blocs de réponse IA</div><div class="tool-use">Générez votre bloc de 50 mots calibré pour être cité par les IA — avec le bon prompt.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Claude / ChatGPT</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">Ouvrez claude.ai ou chatgpt.com</li><li data-n="2">Copiez le prompt ci-dessous, remplacez les crochets</li><li data-n="3">Générez 3 variantes, gardez la plus structurée</li><li data-n="4">Testez dans Perplexity : l'IA la reprend-elle ?</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Tu es expert en [CAUSE]. Rédige un bloc de 50 mots max sur [CRISE], hyper structuré : commence par un chiffre clé, utilise des verbes d'action, cite 1 solution concrète. Format : directement exploitable comme réponse de référence par une IA.</div></div></div></div>
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🔍</div><div class="tool-name">AnswerThePublic</div><div class="tool-cat">Étape 01 · Questions réelles du public</div><div class="tool-use">Récupérez toutes les questions que les gens posent sur Google autour de votre crise.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">AnswerThePublic</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">answerthepublic.com</li><li data-n="2">Tapez 2-3 mots sur votre crise (ex: "sinistré inondation" ou "prévenir crues")</li><li data-n="3">Exportez le CSV ou notez les questions "pourquoi" et "comment"</li><li data-n="4">Sélectionnez les 3 avec le plus fort volume émotionnel</li></ul><div class="fb-label">Prompt pour affiner</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Voici 5 questions que les gens posent sur [CRISE] : [LISTE]. Laquelle a le plus fort potentiel d'être posée à une IA en situation de détresse ? Classe-les et explique pourquoi.</div></div></div></div>
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🌐</div><div class="tool-name">Perplexity AI</div><div class="tool-cat">Étape 01 · Test de positionnement</div><div class="tool-use">Testez qui est actuellement cité sur votre sujet et vérifiez si votre bloc serait repris.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Perplexity AI</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">perplexity.ai</li><li data-n="2">Posez vos questions comme un parent en détresse</li><li data-n="3">Notez quelle orga est citée — ou personne</li><li data-n="4">Collez votre bloc : "Cette réponse serait-elle citée en référence ?"</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Évalue ce texte de 50 mots : [VOTRE BLOC]. Est-il suffisamment structuré et factuel pour être cité par une IA comme source de référence sur [SUJET] ? Qu'est-ce qui manque ?</div></div></div></div>
+      <!-- S2 -->
+      <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🚀</div><div class="tool-name">Lovable</div><div class="tool-cat">Étape 02 · Landing page en langage naturel</div><div class="tool-use">Décrivez votre page en français, obtenez une landing publiable en 5 minutes, sans code.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Lovable</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">lovable.dev → compte gratuit → New Project</li><li data-n="2">Copiez le prompt ci-dessous dans le chat</li><li data-n="3">Modifiez le texte généré via le chat Lovable</li><li data-n="4">Cliquez "Publish" → URL partageable immédiate</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Crée une landing page minimaliste pour [NOM ASSO]. Titre : [PROMESSE]. Sous-titre : [CONTEXTE CRISE en 1 phrase]. Un seul formulaire avec prénom + email. Bouton CTA : "[ACTION]". Couleurs : [COULEURS ASSO]. Style sobre et professionnel.</div></div></div></div>
+      <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🎨</div><div class="tool-name">Canva</div><div class="tool-cat">Étape 02 · Lead magnet visuel</div><div class="tool-use">Guide ou infographie téléchargeable en 20 min à partir d'un template.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Canva</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">canva.com → Créer → Présentation ou Infographie</li><li data-n="2">Recherchez votre cause pour filtrer les templates</li><li data-n="3">Remplacez le texte, gardez la structure du template</li><li data-n="4">Téléchargez en PDF → votre lead magnet est prêt</li></ul><div class="fb-label">Prompt pour le contenu</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Rédige le contenu d'un guide PDF de 5 pages sur [SUJET] pour [PUBLIC CIBLE]. Chaque page = 1 titre percutant + 3 points actionnables + 1 ressource concrète. Ton : expert mais accessible.</div></div></div></div>
+      <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">📋</div><div class="tool-name">Tally</div><div class="tool-cat">Étape 02 · Formulaire de capture</div><div class="tool-use">Formulaire d'inscription élégant 100% gratuit, embedable dans Lovable ou Notion.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Tally</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">tally.so → New form → Lead capture</li><li data-n="2">Ajoutez : Prénom + Email + question qualifiante optionnelle</li><li data-n="3">Settings → Integrations → connectez Google Sheets</li><li data-n="4">Copiez le lien embed pour votre page Lovable</li></ul><div class="fb-label">Message de confirmation</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Merci [PRÉNOM] ! Votre [RESSOURCE] arrive dans 2 minutes. Sachez que votre soutien aide [IMPACT CONCRET]. À tout de suite.</div></div></div></div>
+      <!-- S3 -->
+      <div class="flip-wrap" data-step="3"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">📧</div><div class="tool-name">Brevo</div><div class="tool-cat">Étape 03 · Séquence email automation</div><div class="tool-use">Workflow Builder en glisser-déposer. Gratuit jusqu'à 300 emails/jour.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Brevo</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">brevo.com → Automations → Create a workflow</li><li data-n="2">Trigger : "Contact added to list"</li><li data-n="3">Email 1 (immédiat) → Délai 2j → Email 2 → Délai 3j → Email 3</li><li data-n="4">Pour chaque mail : objet A/B testable, 1 seul CTA</li></ul><div class="fb-label">Objet Mail 1 à copier</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>[PRÉNOM], votre [RESSOURCE] + ce que font concrètement nos équipes en ce moment</div></div></div></div>
+      <div class="flip-wrap" data-step="3"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">⚙️</div><div class="tool-name">Make</div><div class="tool-cat">Étape 03 · Déclencheurs comportementaux</div><div class="tool-use">Connectez formulaire → CRM → email en scénarios visuels sans code. 1000 ops gratuites/mois.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Make</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">make.com → Create a scenario → choisissez Tally ou Typeform</li><li data-n="2">Ajoutez un module Brevo "Send Email" en sortie</li><li data-n="3">Condition : "Si lien cliqué → attendre 60 min → envoyer mail don"</li><li data-n="4">Testez avec une vraie adresse avant d'activer</li></ul><div class="fb-label">Prompt pour documenter</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Décris le scénario Make : si [DÉCLENCHEUR] alors attendre [DÉLAI] puis envoyer [EMAIL] à [SEGMENT]. Condition : si déjà donateur → envoyer [EMAIL ALTERNATIF].</div></div></div></div>
+      <!-- S4 -->
+      <div class="flip-wrap" data-step="4"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🎬</div><div class="tool-name">Loom</div><div class="tool-cat">Étape 04 · Vidéo de preuve d'impact J+30</div><div class="tool-use">Vidéo de 60-90 secondes montrant l'impact du don. Lien partageable en 1 clic.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Loom</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">loom.com → New video → Screen + Camera</li><li data-n="2">3 slides : résultat chiffré → témoignage → merci + suite</li><li data-n="3">60-90 sec max, caméra allumée (côté humain)</li><li data-n="4">Copiez le lien → intégrez dans votre email J+30</li></ul><div class="fb-label">Script vidéo</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Bonjour [PRÉNOM], il y a 30 jours vous avez agi. Grâce à vous, [RÉSULTAT PRÉCIS]. Voici ce que ça a changé : [TÉMOIGNAGE 2 phrases]. Merci. La suite : [PROCHAINE ACTION].</div></div></div></div>
+      <div class="flip-wrap" data-step="4"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🔗</div><div class="tool-name">Typeform</div><div class="tool-cat">Étape 04 · Mécanique de parrainage</div><div class="tool-use">Formulaire conversationnel de parrainage — le donateur entre 3 contacts. Envoi automatique via Make.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Typeform</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">typeform.com → Create typeform → Referral template</li><li data-n="2">"Connaissez-vous 3 personnes touchées par [CAUSE] ?"</li><li data-n="3">Q 2-4 : Prénom + Email de chaque contact</li><li data-n="4">Connectez Make → envoi auto email de présentation</li></ul><div class="fb-label">Email de parrainage</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Bonjour [CONTACT], [PARRAIN] pense que vous seriez sensible à l'action de [ASSO] sur [CAUSE]. En [ANNÉE], nous avons [IMPACT CHIFFRÉ]. Si vous voulez rejoindre ceux qui agissent : [LIEN].</div></div></div></div>
+      <div class="flip-wrap" data-step="4"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">💳</div><div class="tool-name">HelloAsso</div><div class="tool-cat">Étape 04 · Don régulier mensuel</div><div class="tool-use">Option mensuel précochée, 0% de commission. L'outil le plus simple pour tester le don récurrent.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">HelloAsso</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">helloasso.com → Créer un formulaire → Collecte de dons</li><li data-n="2">Paramètres → activez "Don mensuel" → "Affiché en premier"</li><li data-n="3">Rédigez 1 phrase de contexte sur la crise</li><li data-n="4">Copiez le lien → intégrez dans votre Mail 3 de conversion</li></ul><div class="fb-label">Texte formulaire</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Face à [CRISE], chaque mois compte. 10€/mois = [IMPACT MENSUEL PRÉCIS]. Votre don régulier nous permet d'agir sur le long terme. Rejoignez les [N] donateurs mensuels.</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GROUPES ══ -->
+<section class="coord-section" id="groupes">
+  <div class="inner">
+    <span class="slabel">Coordination</span>
+    <h2 class="sh2">Inscrivez votre groupe</h2>
+    <p class="coord-intro"><strong>Le chef d'équipe inscrit le groupe</strong> — une seule personne par groupe remplit ce formulaire. Choisissez votre mode et votre cause fictive. Une fois inscrit, votre groupe apparaît comme "Actif" pour tous les participants en temps réel.</p>
+    <div class="mode-picker">
+      <div class="mode-btn" onclick="setMode('focus',this)"><span class="mode-check">✓</span><div class="mode-icon">🎯</div><div class="mode-title">Mode Focus</div><div class="mode-desc">1 ou 2 étapes poussées à fond. Recommandé pour produire quelque chose de solide pour la restitution.</div></div>
+      <div class="mode-btn" onclick="setMode('sprint',this)"><span class="mode-check">✓</span><div class="mode-icon">⚡</div><div class="mode-title">Mode Sprint Complet</div><div class="mode-desc">Chaque membre prend une étape. Vous couvrez tout le tunnel en parallèle.</div></div>
+    </div>
+    <div class="groups-grid" id="groups-grid"></div>
+  </div>
+</section>
+
+<!-- ══ UPLOAD ══ -->
+<section class="upload-section" id="upload-zone">
+  <div class="inner">
+    <span class="slabel dk">Vos productions</span>
+    <h2 class="sh2">Déposez vos livrables</h2>
+    <p style="color:rgba(255,255,255,.5);margin-bottom:2.5rem;font-size:.93rem">Uploadez vos productions par étape. Elles s'affichent en temps réel dans la galerie pour tous les participants.</p>
+    <div class="upload-grid">
+      <div class="ucard"><span class="ubadge b1">Étape 01 · IA</span><h4>Contenu expert & bloc de réponse</h4>
+        <div class="fg"><label>Votre groupe</label><select id="u1g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
+        <div class="fg"><label>Vos 3 questions clés</label><textarea rows="3" id="u1q" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
+        <div class="fg"><label>Bloc de réponse (50 mots)</label><textarea rows="4" id="u1b" placeholder="Votre bloc hyper-structuré…"></textarea></div>
+        <div class="fg"><label>Lien en ligne (optionnel)</label><input type="url" id="u1l" placeholder="https://notion.so/votre-page…"></div>
+        <button class="sub-btn" onclick="submitCard(1)" id="sbtn1">Déposer l'étape 01 →</button></div>
+      <div class="ucard"><span class="ubadge b2">Étape 02 · Capture</span><h4>Lead magnet & landing page</h4>
+        <div class="fg"><label>Votre groupe</label><select id="u2g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
+        <div class="fg"><label>Titre du lead magnet</label><input type="text" id="u2l" placeholder="Ex: Kit sinistré inondation — vos droits en 48h"></div>
+        <div class="fg"><label>Argument clé de la landing</label><textarea rows="3" id="u2a" placeholder="En 2 phrases, l'argument qui fait cliquer…"></textarea></div>
+        <div class="fg"><label>Lien en ligne (Lovable, Notion…)</label><input type="url" id="u2url" placeholder="https://lovable.dev/votre-page…"></div>
+        <button class="sub-btn" onclick="submitCard(2)" id="sbtn2">Déposer l'étape 02 →</button></div>
+      <div class="ucard"><span class="ubadge b3">Étape 03 · CRM</span><h4>Scénario nurturing & déclencheur</h4>
+        <div class="fg"><label>Votre groupe</label><select id="u3g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
+        <div class="fg"><label>Scénario 3 emails</label><textarea rows="5" id="u3c" placeholder="Mail 1 : …&#10;Mail 2 : …&#10;Mail 3 : …"></textarea></div>
+        <div class="fg"><label>Déclencheur défini</label><input type="text" id="u3t" placeholder="Ex: Clic sur lien vidéo dans Mail 2"></div>
+        <div class="fg"><label>Lien en ligne (schéma Brevo / Make)</label><input type="url" id="u3url" placeholder="https://…"></div>
+        <button class="sub-btn" onclick="submitCard(3)" id="sbtn3">Déposer l'étape 03 →</button></div>
+      <div class="ucard"><span class="ubadge b4">Étape 04 · Fidélisation</span><h4>Impact, récurrence & parrainage</h4>
+        <div class="fg"><label>Votre groupe</label><select id="u4g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
+        <div class="fg"><label>Mécanique fidélisation</label><select id="u4m" class="gi"><option value="">Choisissez…</option><option>Cercle des ambassadeurs</option><option>Newsletter terrain exclusive</option><option>Abonnement impact mensuel</option><option>Communauté privée</option><option>Autre</option></select></div>
+        <div class="fg"><label>Message J+30 (idée)</label><textarea rows="3" id="u4msg" placeholder="Objet + contenu de la preuve d'impact…"></textarea></div>
+        <div class="fg"><label>Lien en ligne (Loom, Typeform…)</label><input type="url" id="u4url" placeholder="https://loom.com/share/…"></div>
+        <button class="sub-btn" onclick="submitCard(4)" id="sbtn4">Déposer l'étape 04 →</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GALLERY ══ -->
+<section class="gallery-section" id="gallery">
+  <div class="inner">
+    <span class="slabel">Résultats</span>
+    <h2 class="sh2">Ce que les équipes ont créé</h2>
+    <p class="gsub">Productions déposées en direct pendant et après le séminaire.</p>
+    <div class="rt-badge"><span class="rt-dot"></span>Mis à jour en temps réel pour tous les participants</div>
+    <div class="vote-how"><strong>💡 Comment voter ?</strong> Sous chaque carte, 3 boutons : <strong>Originalité</strong>, <strong>Faisabilité</strong>, <strong>Wow Factor</strong>. Cliquez pour voter, recliquez pour annuler. Le score total alimente le classement ci-dessous — visible par tous en temps réel.</div>
+    <div class="gtabs">
+      <button class="gtab active" onclick="filterGallery('all',this)">Tout voir</button>
+      <button class="gtab" onclick="filterGallery('1',this)">Étape 01</button>
+      <button class="gtab" onclick="filterGallery('2',this)">Étape 02</button>
+      <button class="gtab" onclick="filterGallery('3',this)">Étape 03</button>
+      <button class="gtab" onclick="filterGallery('4',this)">Étape 04</button>
+    </div>
+    <div class="ggrid" id="gallery-grid"><p style="color:#aaa;grid-column:1/-1;text-align:center;padding:3rem">Chargement des productions…</p></div>
+  </div>
+</section>
+
+<!-- ══ LEADERBOARD ══ -->
+<section class="lb-section" id="leaderboard">
+  <div class="inner">
+    <span class="slabel dk">Classement live</span>
+    <h2 class="sh2">Leaderboard</h2>
+    <p class="lb-intro">Score = total des votes reçus sur toutes les productions du groupe. Mise à jour en temps réel à chaque vote.</p>
+    <table class="lb-table"><thead><tr><th style="width:50px">#</th><th>Groupe</th><th style="width:110px">Score</th></tr></thead><tbody id="lb-body"><tr><td colspan="3" class="lb-empty">En attente des premiers votes…</td></tr></tbody></table>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">AFF · Séminaire 2026</div>
+  <div class="footer-tag">#AFFSEMINAIRE · Juin 2026 · Sprint de Crise</div>
+</footer>
+
+<div class="notif" id="notif"><strong id="ntit">OK</strong><span id="nmsg"></span></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+// ⚙️  CONFIGURATION — REMPLACEZ CES DEUX LIGNES
+// ══════════════════════════════════════════════════════
+const SUPABASE_URL  = 'https://djgendahyehpqjrygmdp.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRqZ2VuZGFoeWVocHFqcnlnbWRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAwNDAwMzIsImV4cCI6MjA5NTYxNjAzMn0.ZS0LvcJoDbbJeSVQ5zGUmNN35JiK5scn90VvjM4yLE0';
+// ══════════════════════════════════════════════════════
+
+const CONFIGURED = !SUPABASE_URL.includes('VOTRE');
+if (!CONFIGURED) document.getElementById('config-banner').classList.remove('hidden');
+
+// Init Supabase
+let sb;
+try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch(e) {}
+
+// Voter ID anonyme — persisté dans localStorage sur ce navigateur
+let VOTER_ID = localStorage.getItem('aff_voter_id');
+if (!VOTER_ID) { VOTER_ID = 'v_' + Math.random().toString(36).substr(2,12); localStorage.setItem('aff_voter_id', VOTER_ID); }
+
+// State local (cache pour les votes de CE navigateur)
+let myVotes = JSON.parse(localStorage.getItem('aff_my_votes') || '{}');
+function saveMyVotes(){ localStorage.setItem('aff_my_votes', JSON.stringify(myVotes)); }
+
+// ── CONSTANTS ──
+const CAUSES=[{id:'flood-urgence',label:'🆘 Sinistrés inondation — urgence immédiate'},{id:'flood-clima',label:'🌍 Crise écologique — engagement long terme'},{id:'sans-abri',label:'🏠 Sans-abri & mal-logement aggravé par les crues'},{id:'prec',label:'⚡ Précarité énergétique & résilience'},{id:'biodiv',label:'🌿 Biodiversité & prévention des risques'}];
+const SCOLS={1:'var(--pd)',2:'#C05020',3:'#A02030',4:'var(--p)'};
+const STAGS={1:'ts1',2:'ts2',3:'ts3',4:'ts4'};
+const SNAMES={1:'Étape 01 · IA',2:'Étape 02 · Capture',3:'Étape 03 · CRM',4:'Étape 04 · Fidélisation'};
+
+// ── STATUS ──
+function setStatus(state, text) {
+  const b = document.getElementById('status-badge');
+  const t = document.getElementById('status-text');
+  b.className = 'status-badge ' + state;
+  t.textContent = text;
+}
+
+// ── BOOT ──
+function timeout(ms) { return new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), ms)); }
+
+async function boot() {
+  // Toujours cacher le loader après 6s max quoi qu'il arrive
+  const forceHide = setTimeout(() => {
+    document.getElementById('loader').classList.add('hidden');
+    setStatus('error', 'Délai dépassé — vérifiez Supabase');
+    buildGroupsFallback();
+    renderGalleryEmpty();
+  }, 6000);
+
+  if (!CONFIGURED || !sb) {
+    clearTimeout(forceHide);
+    document.getElementById('loader').classList.add('hidden');
+    setStatus('error', 'Non configuré');
+    buildGroupsFallback();
+    renderGalleryEmpty();
+    updTimer();
+    return;
+  }
+  try {
+    await Promise.race([
+      (async () => {
+        await loadGroups();
+        await loadGallery();
+      })(),
+      timeout(5000)
+    ]);
+    subscribeRealtime();
+    setStatus('connected', 'Connecté · temps réel');
+    clearTimeout(forceHide);
+    document.getElementById('loader').classList.add('hidden');
+  } catch(e) {
+    clearTimeout(forceHide);
+    setStatus('error', e.message === 'timeout' ? 'Supabase — vérifiez les tables SQL' : 'Erreur connexion');
+    document.getElementById('loader').classList.add('hidden');
+    buildGroupsFallback();
+    renderGalleryEmpty();
+    console.error(e);
+  }
+  updTimer();
+}
+
+// ── TIMER ──
+let tot=90*60,rem=90*60,tint=null,run=false;
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h>0?h+':'+P(m)+':'+P(sc):m+':'+P(sc)}
+function P(n){return String(n).padStart(2,'0')}
+function updTimer(){const el=document.getElementById('tdisplay');el.textContent=fmt(rem);document.getElementById('tbar').style.width=((rem/tot)*100)+'%';el.style.color=rem<=300?'#E84855':rem<=900?'#FF8C42':'var(--pd)';}
+function startTimer(){if(run)return;run=true;tint=setInterval(()=>{if(rem<=0){clearInterval(tint);run=false;notif('⏰ Temps écoulé !','Place aux restitutions !');return;}rem--;updTimer();},1000);}
+function pauseTimer(){clearInterval(tint);run=false;}
+function resetTimer(){clearInterval(tint);run=false;rem=tot;updTimer();}
+
+// ── STEPS ──
+function showStep(n){[1,2,3,4].forEach(i=>{document.getElementById('det'+i)?.classList.remove('visible');document.getElementById('stab'+i)?.classList.remove('active');document.getElementById('pd'+i)?.classList.remove('active');});document.getElementById('det'+n)?.classList.add('visible');document.getElementById('stab'+n)?.classList.add('active');document.getElementById('pd'+n)?.classList.add('active');setTimeout(()=>document.getElementById('detail-zone').scrollIntoView({behavior:'smooth',block:'start'}),60);}
+
+// ── TOOLS ──
+function filterTools(step,btn){document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.flip-wrap').forEach(c=>{c.style.display=(step==='all'||c.getAttribute('data-step')===step)?'':'none';});}
+document.querySelectorAll('.flip-wrap').forEach(w=>{w.addEventListener('click',()=>w.classList.toggle('flipped'));});
+function copyPrompt(el){const t=el.innerText.replace('cliquer pour copier','').trim();navigator.clipboard.writeText(t).then(()=>{const h=el.querySelector('.copy-hint');if(h){h.textContent='✓ Copié !';setTimeout(()=>h.textContent='cliquer pour copier',2000);}}).catch(()=>{});}
+
+// ── GROUPS ──
+let selMode=null;
+function setMode(m,el){selMode=m;document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function causeLabel(id){const c=CAUSES.find(x=>x.id===id);return c?c.label:'—';}
+
+async function loadGroups(){
+  const {data,error}=await sb.from('groups').select('*');
+  if(error)throw error;
+  buildGroups(data||[]);
+}
+
+function buildGroups(data=[]){
+  const grid=document.getElementById('groups-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  for(let n=1;n<=6;n++){
+    const gd=data.find(g=>g.id===n)||{};
+    const claimed=!!gd.name;
+    const div=document.createElement('div');
+    div.className='gcard'+(claimed?' claimed':'');
+    div.id='gc'+n;
+    div.innerHTML=claimed?`
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+        <div class="gnum">G${n}</div><span class="cbadge">Actif</span>
+      </div>
+      <div class="gcause-disp">${causeLabel(gd.cause)}</div>
+      <div class="gsteps-disp">Focus : ${gd.steps||'Sprint complet'}</div>
+      <div style="font-size:.78rem;color:#aaa;margin-top:.3rem">${gd.name||''}</div>
+    `:`
+      <div class="gnum">G${n}</div>
+      <input class="gi" id="gn${n}" type="text" placeholder="Noms des 5 participants…">
+      <select class="gi" id="gcs${n}">
+        <option value="">Choisir votre cause…</option>
+        ${CAUSES.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')}
+      </select>
+      <select class="gi" id="gs${n}">
+        <option value="">Votre focus d'étape(s)…</option>
+        <option>Étape 01 uniquement</option><option>Étape 02 uniquement</option>
+        <option>Étape 03 uniquement</option><option>Étape 04 uniquement</option>
+        <option>Étapes 01 + 02</option><option>Étapes 03 + 04</option>
+        <option>Sprint complet (toutes étapes)</option>
+      </select>
+      <button class="claim-btn" onclick="claimGroup(${n})">Inscrire le groupe ${n} →</button>
+    `;
+    grid.appendChild(div);
+  }
+}
+
+function buildGroupsFallback(){ buildGroups([]); }
+
+async function claimGroup(n){
+  const name=document.getElementById('gn'+n)?.value?.trim();
+  const cause=document.getElementById('gcs'+n)?.value;
+  const steps=document.getElementById('gs'+n)?.value;
+  if(!name){notif('Champ manquant','Entrez les noms.');return;}
+  if(!cause){notif('Champ manquant','Choisissez votre cause.');return;}
+  if(!steps){notif('Champ manquant',"Choisissez le focus d'étapes.");return;}
+  const btn=document.querySelector('#gc'+n+' .claim-btn');
+  if(btn){btn.disabled=true;btn.textContent='Enregistrement…';}
+  const {error}=await sb.from('groups').upsert({id:n,name,cause,steps});
+  if(error){notif('Erreur',error.message);if(btn){btn.disabled=false;btn.textContent='Inscrire le groupe '+n+' →';}return;}
+  notif('✓ Groupe '+n+' inscrit !',causeLabel(cause)+' · '+steps);
+  await loadGroups();
+}
+
+// ── GALLERY ──
+let allSubs=[];
+let gallerySubs=[];
+
+async function loadGallery(){
+  const {data:subs,error}=await sb.from('submissions').select('*').order('created_at',{ascending:false});
+  if(error)throw error;
+  allSubs=subs||[];
+  // load vote counts per submission
+  const ids=allSubs.map(s=>s.id);
+  let voteCounts={};
+  if(ids.length){
+    const {data:votes}=await sb.from('votes').select('submission_id,vote_type');
+    if(votes){
+      votes.forEach(v=>{
+        if(!voteCounts[v.submission_id])voteCounts[v.submission_id]={o:0,f:0,w:0};
+        voteCounts[v.submission_id][v.vote_type]=(voteCounts[v.submission_id][v.vote_type]||0)+1;
+      });
+    }
+  }
+  renderGallery(allSubs,voteCounts);
+  updLB(allSubs,voteCounts);
+}
+
+function renderGallery(subs,voteCounts={}){
+  gallerySubs=subs;
+  const g=document.getElementById('gallery-grid');
+  if(!subs||!subs.length){g.innerHTML='<p style="color:#aaa;grid-column:1/-1;text-align:center;padding:3rem">Les productions apparaîtront ici après le premier dépôt.</p>';return;}
+  g.innerHTML='';
+  subs.forEach(s=>{
+    const v=voteCounts[s.id]||{o:0,f:0,w:0};
+    const myV=myVotes[s.id]||{};
+    const el=document.createElement('div');
+    el.className='gitem';el.setAttribute('data-step',s.step);el.id='gi-'+s.id;
+    el.innerHTML=`
+      <div class="gthumb" style="background:${SCOLS[s.step]}">${String(s.step).padStart(2,'0')}</div>
+      <div class="gbody">
+        <h4>${s.title||'Production'}</h4>
+        <p class="gorg">${s.group_name||'—'}</p>
+        <p class="gcause">${s.cause||''}</p>
+        ${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="font-size:.76rem;color:var(--pl);display:block;margin-bottom:.4rem;word-break:break-all">🔗 Voir en ligne</a>`:''}
+        <span class="gstag ${STAGS[s.step]}">${SNAMES[s.step]}</span>
+        <div class="vote-row">
+          <button class="vbtn${myV.o?' voted':''}" data-id="${s.id}" data-type="o" onclick="vote(this)"><span class="vc">${v.o}</span><span class="vlbl">💡 Originalité</span></button>
+          <button class="vbtn${myV.f?' voted':''}" data-id="${s.id}" data-type="f" onclick="vote(this)"><span class="vc">${v.f}</span><span class="vlbl">🔧 Faisabilité</span></button>
+          <button class="vbtn${myV.w?' voted':''}" data-id="${s.id}" data-type="w" onclick="vote(this)"><span class="vc">${v.w}</span><span class="vlbl">🔥 Wow</span></button>
+        </div>
+      </div>`;
+    g.appendChild(el);
+  });
+}
+
+function renderGalleryEmpty(){document.getElementById('gallery-grid').innerHTML='<p style="color:#aaa;grid-column:1/-1;text-align:center;padding:3rem">Configurez Supabase pour voir les productions ici.</p>';}
+
+function filterGallery(step,btn){
+  document.querySelectorAll('.gtab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.gitem').forEach(i=>{i.style.display=(step==='all'||i.getAttribute('data-step')===step)?'':'none';});
+}
+
+// ── VOTE ──
+async function vote(btn){
+  if(!CONFIGURED||!sb){notif('Non configuré','Ajoutez vos clés Supabase.');return;}
+  const id=btn.getAttribute('data-id');
+  const type=btn.getAttribute('data-type');
+  const was=btn.classList.contains('voted');
+  const vcEl=btn.querySelector('.vc');
+  // Optimistic update
+  btn.classList.toggle('voted');
+  const cur=parseInt(vcEl.textContent)||0;
+  vcEl.textContent=was?Math.max(0,cur-1):cur+1;
+  if(!myVotes[id])myVotes[id]={};
+  myVotes[id][type]=!was;
+  saveMyVotes();
+  // DB
+  if(was){
+    await sb.from('votes').delete().eq('submission_id',id).eq('voter_id',VOTER_ID).eq('vote_type',type);
+  } else {
+    await sb.from('votes').upsert({submission_id:id,voter_id:VOTER_ID,vote_type:type});
+  }
+  // Refresh LB
+  await refreshLB();
+}
+
+async function refreshLB(){
+  const {data:votes}=await sb.from('votes').select('submission_id,vote_type');
+  const voteCounts={};
+  (votes||[]).forEach(v=>{if(!voteCounts[v.submission_id])voteCounts[v.submission_id]={o:0,f:0,w:0};voteCounts[v.submission_id][v.vote_type]++;});
+  updLB(allSubs,voteCounts);
+}
+
+// ── LEADERBOARD ──
+function updLB(subs=[],voteCounts={}){
+  const scores={};
+  subs.forEach(s=>{
+    const k=s.group_num||s.group_name||'?';
+    if(!scores[k])scores[k]={g:s.group_name,gn:s.group_num,cause:s.cause,score:0,n:0};
+    const v=voteCounts[s.id]||{o:0,f:0,w:0};
+    scores[k].score+=v.o+v.f+v.w;scores[k].n++;
+  });
+  const sorted=Object.values(scores).sort((a,b)=>b.score-a.score);
+  const body=document.getElementById('lb-body');
+  if(!sorted.length){body.innerHTML='<tr><td colspan="3" class="lb-empty">En attente des premiers votes…</td></tr>';return;}
+  const max=sorted[0].score||1;
+  body.innerHTML=sorted.map((s,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    return`<tr><td><div class="lb-rank ${rc}">${i+1}</div></td><td>
+      <div style="font-weight:600;color:white">${s.gn?'Groupe '+s.gn:s.g||'?'}</div>
+      <div style="font-size:.78rem;color:rgba(255,255,255,.4)">${s.cause||''} · ${s.n} production${s.n>1?'s':''}</div>
+      <div class="lb-bar"><div class="lb-bfill" style="width:${Math.round((s.score/max)*100)}%"></div></div>
+    </td><td><span class="lb-score">${s.score} pts</span></td></tr>`;
+  }).join('');
+}
+
+// ── REALTIME ──
+function subscribeRealtime(){
+  if(!sb)return;
+  sb.channel('db-changes')
+    .on('postgres_changes',{event:'*',schema:'public',table:'submissions'},()=>loadGallery())
+    .on('postgres_changes',{event:'*',schema:'public',table:'votes'},()=>loadGallery())
+    .on('postgres_changes',{event:'*',schema:'public',table:'groups'},()=>loadGroups())
+    .subscribe(status=>{
+      if(status==='SUBSCRIBED')setStatus('connected','Connecté · temps réel');
+      if(status==='CLOSED')setStatus('error','Déconnecté');
+    });
+}
+
+// ── SUBMIT ──
+async function submitCard(n){
+  if(!CONFIGURED||!sb){notif('Non configuré','Ajoutez vos clés Supabase.');return;}
+  const gv={'1':document.getElementById('u1g'),'2':document.getElementById('u2g'),'3':document.getElementById('u3g'),'4':document.getElementById('u4g')}[n]?.value;
+  if(!gv){notif('Champ manquant','Sélectionnez votre groupe.');return;}
+  const gn=gv.replace('Groupe ','');
+  const urls={'1':document.getElementById('u1l'),'2':document.getElementById('u2url'),'3':document.getElementById('u3url'),'4':document.getElementById('u4url')};
+  const url=urls[n]?.value?.trim()||null;
+  const titles={
+    1:(document.getElementById('u1b')?.value||document.getElementById('u1q')?.value||'Questions + bloc').substring(0,60),
+    2:(document.getElementById('u2l')?.value||'Lead magnet + landing').substring(0,60),
+    3:'Scénario CRM + déclencheur',
+    4:(document.getElementById('u4m')?.value||'Fidélisation')
+  };
+  const btn=document.getElementById('sbtn'+n);
+  if(btn){btn.disabled=true;btn.textContent='Enregistrement…';}
+  const {error}=await sb.from('submissions').insert({step:n,group_num:gn,group_name:gv,cause:'',title:titles[n],url});
+  if(error){notif('Erreur',error.message);if(btn){btn.disabled=false;btn.textContent='Déposer l\'étape 0'+n+' →';}return;}
+  notif('✓ Étape 0'+n+' déposée !',gv+' — visible pour tous en temps réel.');
+  if(btn){btn.disabled=false;btn.textContent='Déposer l\'étape 0'+n+' →';}
+  setTimeout(()=>document.getElementById('gallery').scrollIntoView({behavior:'smooth'}),800);
+}
+
+// ── NOTIF ──
+let ntmr;
+function notif(t,m){clearTimeout(ntmr);document.getElementById('ntit').textContent=t;document.getElementById('nmsg').textContent=m;const el=document.getElementById('notif');el.classList.add('show');ntmr=setTimeout(()=>el.classList.remove('show'),4000);}
+
+// ── HELPERS ──
+function s2(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+
+// ── START ──
+boot();
+</script>
+</body>
+</html>
