@@ -364,12 +364,6 @@ html{scroll-behavior:smooth}
   <span id="status-text">Connexion…</span>
 </div>
 
-<!-- ══ CONFIG BANNER — disparaît quand les clés sont renseignées ══ -->
-<div class="config-banner" id="config-banner">
-  <strong>⚙️ Configuration requise :</strong>
-  Remplacez <code>VOTRE_URL</code> et <code>VOTRE_ANON_KEY</code> dans le code (ligne 2 du script) avec vos clés Supabase.
-  <a href="https://supabase.com/dashboard" target="_blank">→ Ouvrir Supabase</a>
-</div>
 
 <!-- ══ HERO ══ -->
 <section class="hero" id="top">
@@ -656,7 +650,6 @@ const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // ══════════════════════════════════════════════════════
 
 const CONFIGURED = !SUPABASE_URL.includes('VOTRE');
-if (!CONFIGURED) document.getElementById('config-banner').classList.remove('hidden');
 
 // Init Supabase
 let sb;
