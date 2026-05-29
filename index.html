@@ -80,14 +80,14 @@ section{padding:5rem 1.5rem}
 @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .brief-hero{position:relative;min-height:85vh;display:flex;align-items:center;justify-content:center;padding:4rem 1.5rem;overflow:hidden}
 .crisis-visual{position:absolute;inset:0;z-index:0;overflow:hidden}
-.cv-base{position:absolute;inset:0;background:linear-gradient(160deg,#0d0820 0%,#1a0f2e 40%,#0a1628 100%)}
-.cv-glow1{position:absolute;top:20%;left:15%;width:300px;height:300px;background:radial-gradient(circle,rgba(232,72,85,.35) 0%,transparent 70%);border-radius:50%}
-.cv-glow2{position:absolute;bottom:10%;right:10%;width:250px;height:250px;background:radial-gradient(circle,rgba(255,214,0,.15) 0%,transparent 70%);border-radius:50%}
-.cv-glow3{position:absolute;top:40%;right:20%;width:180px;height:180px;background:radial-gradient(circle,rgba(107,95,138,.4) 0%,transparent 70%);border-radius:50%}
+.cv-base{position:absolute;inset:0;background:linear-gradient(160deg,#020c18 0%,#041e35 40%,#061524 100%)}
+.cv-glow1{position:absolute;top:20%;left:15%;width:300px;height:300px;background:radial-gradient(circle,rgba(30,100,200,.45) 0%,transparent 70%);border-radius:50%}
+.cv-glow2{position:absolute;bottom:10%;right:10%;width:250px;height:250px;background:radial-gradient(circle,rgba(0,180,160,.2) 0%,transparent 70%);border-radius:50%}
+.cv-glow3{position:absolute;top:40%;right:20%;width:180px;height:180px;background:radial-gradient(circle,rgba(20,80,160,.35) 0%,transparent 70%);border-radius:50%}
 .cv-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,214,0,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,214,0,.04) 1px,transparent 1px);background-size:60px 60px}
-.cv-scan{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(232,72,85,.8),transparent);animation:scanline 4s linear infinite}
+.cv-scan{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,rgba(30,140,255,.8),transparent);animation:scanline 4s linear infinite}
 @keyframes scanline{0%{top:0}100%{top:100%}}
-.cv-node{position:absolute;background:rgba(10,8,18,.85);border:1px solid rgba(232,72,85,.4);border-radius:4px;padding:.6rem 1rem;font-size:.78rem;color:rgba(255,255,255,.8);backdrop-filter:blur(4px)}
+.cv-node{position:absolute;background:rgba(10,8,18,.85);border:1px solid rgba(30,140,255,.4);border-radius:4px;padding:.6rem 1rem;font-size:.78rem;color:rgba(255,255,255,.8);backdrop-filter:blur(4px)}
 .cv-node.n1{top:12%;left:5%;animation:floatA 6s ease-in-out infinite}
 .cv-node.n2{top:20%;right:6%;animation:floatB 7s ease-in-out infinite}
 .cv-node.n3{bottom:18%;left:8%;animation:floatA 8s ease-in-out infinite 1s}
@@ -100,6 +100,28 @@ section{padding:5rem 1.5rem}
 .cv-trending .tr-title{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:.6rem}
 .cv-trending .tr-item{display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.78rem;color:rgba(255,255,255,.7)}
 .cv-trending .tr-item:last-child{border-bottom:none}
+.cv-wave{position:absolute;bottom:0;left:0;right:0;height:180px;overflow:hidden;z-index:1}
+.cv-wave svg{position:absolute;bottom:0;width:200%;animation:wavemove 8s linear infinite}
+.cv-wave svg.w2{animation:wavemove 12s linear infinite reverse;opacity:.5}
+@keyframes wavemove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.cv-house{position:absolute;bottom:120px;font-size:2rem;opacity:.35;animation:floatA 7s ease-in-out infinite}
+.cv-house.h1{left:12%}.cv-house.h2{left:35%;animation-delay:1.5s;bottom:90px;opacity:.2}
+.cv-house.h3{right:25%;animation-delay:3s;bottom:100px}
+.two-angles{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:2.5rem 0}
+@media(max-width:600px){.two-angles{grid-template-columns:1fr}}
+.angle-card{border-radius:4px;padding:1.5rem;position:relative;overflow:hidden}
+.angle-card.urgent{background:rgba(232,72,85,.12);border:1.5px solid rgba(232,72,85,.35)}
+.angle-card.ecolo{background:rgba(30,180,100,.1);border:1.5px solid rgba(30,180,100,.3)}
+.angle-icon{font-size:2rem;margin-bottom:.8rem;display:block}
+.angle-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:.5rem}
+.angle-card.urgent .angle-title{color:#E84855}
+.angle-card.ecolo .angle-title{color:#4caf50}
+.angle-queries{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.8rem}
+.angle-queries li{font-size:.78rem;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border-radius:3px;padding:.35rem .6rem;font-style:italic}
+.angle-cta{display:inline-block;margin-top:.8rem;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.3rem .7rem;border-radius:2px}
+.angle-card.urgent .angle-cta{background:rgba(232,72,85,.2);color:#E84855}
+.angle-card.ecolo .angle-cta{background:rgba(76,175,80,.15);color:#66bb6a}
+
 .tr-rank{color:var(--y);font-weight:700;font-size:.82rem;width:16px;flex-shrink:0}
 .brief-content{position:relative;z-index:2;text-align:center;max-width:760px}
 .brief-alert{display:inline-flex;align-items:center;gap:.6rem;background:rgba(232,72,85,.15);border:1.5px solid rgba(232,72,85,.5);border-radius:3px;padding:.5rem 1.1rem;font-size:.8rem;font-weight:600;color:#E84855;margin-bottom:2rem;letter-spacing:.04em}
@@ -380,50 +402,82 @@ html{scroll-behavior:smooth}
 <!-- ══ BRIEF ══ -->
 <div class="breaking-bar" id="brief">
   <span class="breaking-tag">🔴 BREAKING</span>
-  <div class="breaking-scroll">Crise de santé mentale chez les 15-25 ans : les urgences psychiatriques débordent &nbsp;·&nbsp; Les parents cherchent de l'aide sur les IA &nbsp;·&nbsp; 1 jeune sur 4 en détresse selon l'INSERM &nbsp;·&nbsp; Les médias généralistes submergés : qui sera LA référence ? &nbsp;·&nbsp; Crise de santé mentale chez les 15-25 ans : les urgences psychiatriques débordent &nbsp;·&nbsp; Les parents cherchent de l'aide sur les IA &nbsp;·&nbsp; 1 jeune sur 4 en détresse selon l'INSERM &nbsp;·&nbsp; Les médias généralistes submergés : qui sera LA référence ? &nbsp;·&nbsp;</div>
+  <div class="breaking-scroll">Inondations majeures : 12 départements en alerte rouge &nbsp;·&nbsp; Des milliers de sinistrés cherchent des solutions sur les IA &nbsp;·&nbsp; 5,4M de logements exposés en France &nbsp;·&nbsp; Qui sera la voix de référence pour les victimes et pour les acteurs du changement ? &nbsp;·&nbsp; Inondations majeures : 12 départements en alerte rouge &nbsp;·&nbsp; Des milliers de sinistrés cherchent des solutions sur les IA &nbsp;·&nbsp; 5,4M de logements exposés en France &nbsp;·&nbsp; Qui sera la voix de référence pour les victimes et pour les acteurs du changement ? &nbsp;·&nbsp;</div>
 </div>
 
 <div class="brief-hero">
   <div class="crisis-visual">
     <div class="cv-base"></div><div class="cv-glow1"></div><div class="cv-glow2"></div><div class="cv-glow3"></div><div class="cv-grid"></div><div class="cv-scan"></div>
-    <div class="cv-node n1"><strong>+67%</strong>admissions psy urgences<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">vs 2023 · DREES</span></div>
-    <div class="cv-node n2"><strong>4,2M</strong>recherches Google en 48h<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">pic mondial · Trends</span></div>
-    <div class="cv-node n3"><strong>73%</strong>des parents : <em style="color:#E84855">"je ne sais pas où aller"</em><br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">Sondage IFOP 2026</span></div>
-    <div class="cv-node n4"><strong>9 min</strong>fenêtre d'attention moyenne<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">avant scroll · Nielsen</span></div>
+    <div class="cv-node n1"><strong>17 600</strong>communes en zone inondable<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">France · Géorisques 2026</span></div>
+    <div class="cv-node n2"><strong>3,8M</strong>recherches Google en 48h<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">pic national · Trends</span></div>
+    <div class="cv-node n3"><strong>68%</strong>des sinistrés : <em style="color:#4fc3f7">"je ne sais pas vers qui me tourner"</em><br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">Sondage IFOP 2026</span></div>
+    <div class="cv-node n4"><strong>5,4M</strong>logements exposés aux crues<br><span style="font-size:.65rem;color:rgba(255,255,255,.4)">France métro · Géorisques</span></div>
+    <div class="cv-wave">
+      <svg viewBox="0 0 1440 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:180px"><path d="M0,80 C360,140 720,20 1080,80 C1260,110 1350,60 1440,80 L1440,180 L0,180 Z" fill="rgba(20,80,200,.25)"/><path d="M0,100 C360,160 720,40 1080,100 C1260,130 1350,80 1440,100 L1440,180 L0,180 Z" fill="rgba(10,60,160,.35)"/></svg>
+      <svg viewBox="0 0 1440 180" class="w2" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="height:180px"><path d="M0,90 C400,30 800,150 1200,90 C1320,60 1380,110 1440,90 L1440,180 L0,180 Z" fill="rgba(30,100,220,.2)"/></svg>
+    </div>
+    <div class="cv-house h1">🏠</div>
+    <div class="cv-house h2">🏡</div>
+    <div class="cv-house h3">🏘️</div>
     <div class="cv-trending">
       <div class="tr-title">🔥 Trending maintenant</div>
-      <div class="tr-item"><span class="tr-rank">1</span>"aide ado dépression"<span style="color:#E84855;font-size:.7rem">↑</span></div>
-      <div class="tr-item"><span class="tr-rank">2</span>"urgences psy enfant"<span style="color:#E84855;font-size:.7rem">↑</span></div>
-      <div class="tr-item"><span class="tr-rank">3</span>"association santé mentale"<span style="color:#E84855;font-size:.7rem">↑</span></div>
-      <div class="tr-item"><span class="tr-rank">4</span>"comment aider mon enfant"<span style="color:#E84855;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">1</span>"aide sinistré inondation"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">2</span>"relogement urgence crue"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">3</span>"association sans abri flood"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
+      <div class="tr-item"><span class="tr-rank">4</span>"comment prévenir inondation"<span style="color:#4fc3f7;font-size:.7rem">↑</span></div>
     </div>
   </div>
   <div class="brief-content">
-    <div class="brief-alert"><span class="alert-pulse"></span>SITUATION EN COURS — MAJ IL Y A 3 MIN</div>
-    <h2>La crise a éclaté.<br><em>Internet cherche des réponses.</em><br><span class="yel">Qui sera trouvé ?</span></h2>
-    <p class="brief-lead">Ce matin, un rapport de l'INSERM confirme ce que beaucoup ressentaient : <strong>1 jeune sur 4 est en état de détresse psychologique sévère</strong>. En quelques heures, les recherches explosent. Les parents sont perdus. Les IA renvoient vers… personne de fiable.</p>
+    <div class="brief-alert"><span class="alert-pulse"></span>ALERTE ROUGE — 12 DÉPARTEMENTS — MAJ IL Y A 3 MIN</div>
+    <h2>Les eaux montent.<br><em>Les gens cherchent une bouée.</em><br><span class="yel">Qui sera trouvé ?</span></h2>
+    <p class="brief-lead">Cette nuit, des crues majeures ont touché le quart sud de la France. <strong>Des milliers de personnes ont tout perdu.</strong> D'autres, déjà précaires, voient leur situation basculer. En quelques heures, les recherches explosent. Les sinistrés sont perdus. Les IA renvoient vers… personne de fiable.</p>
   </div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat-block red"><div class="stat-num">1/4</div><div class="stat-label">jeunes en détresse psychologique sévère</div><div class="stat-src">INSERM · rapport 2026</div></div>
-  <div class="stat-block yel"><div class="stat-num">4,2M</div><div class="stat-label">recherches Google en 48h sur le sujet</div><div class="stat-src">Google Trends · pic mondial</div></div>
-  <div class="stat-block ppl"><div class="stat-num">9 min</div><div class="stat-label">fenêtre d'attention avant de quitter un site</div><div class="stat-src">Nielsen Digital · 2025</div></div>
-  <div class="stat-block grn"><div class="stat-num">0</div><div class="stat-label">association citée comme référence par les IA pour l'instant</div><div class="stat-src">Test ChatGPT · Perplexity · Gemini</div></div>
+  <div class="stat-block red"><div class="stat-num">+320%</div><div class="stat-label">de recherches "aide sinistré inondation" en 24h</div><div class="stat-src">Google Trends · France 2026</div></div>
+  <div class="stat-block yel"><div class="stat-num">5,4M</div><div class="stat-label">logements en zone inondable en France métropolitaine</div><div class="stat-src">Géorisques · Ministère de la Transition</div></div>
+  <div class="stat-block ppl"><div class="stat-num">2 publics</div><div class="stat-label">les sinistrés immédiats ET les citoyens engagés pour le long terme</div><div class="stat-src">Deux discours, deux tunnels à construire</div></div>
+  <div class="stat-block grn"><div class="stat-num">0</div><div class="stat-label">association citée comme référence par les IA sur la crise en cours</div><div class="stat-src">Test ChatGPT · Perplexity · Gemini</div></div>
 </div>
 
 <div class="narrative-section">
   <div class="narrative-inner">
     <div class="narrative-kicker">Le contexte · Ce qui se passe vraiment</div>
-    <p class="narrative-p">Les urgences psychiatriques débordent. Des familles cherchent des réponses à 2h du matin. Elles ouvrent ChatGPT et tapent : <em style="color:rgba(255,255,255,.9)">"comment aider mon fils qui ne veut plus sortir de sa chambre"</em>. L'IA répond avec des généralités. <span class="red">Aucune association n'est citée.</span></p>
-    <p class="narrative-p">Pendant ce temps, <strong>les médias couvrent en surface</strong>. Un article sur 20 va au fond du sujet. Les algorithmes poussent les contenus les plus émotionnels, pas les plus utiles. <span class="yel">Celui qui structure l'information en premier captera une audience pour des années.</span></p>
-    <p class="narrative-p">Ce n'est pas une question de budget. C'est une question de <strong>vitesse, de méthode et de positionnement</strong>. Les marques e-commerce ont appris à capter cette fenêtre d'attention. <span class="yel">Votre asso peut faire pareil.</span></p>
+    <p class="narrative-p">Des sinistrés ouvrent leur téléphone depuis un gymnase d'accueil à 2h du matin et tapent : <em style="color:rgba(255,255,255,.9)">"comment me reloger après inondation aide urgente"</em>. L'IA répond avec des liens vers des pages gouvernementales génériques. <span class="red">Aucune association de terrain n'est citée.</span></p>
+    <p class="narrative-p">À côté d'eux, des milliers de citoyens non touchés mais bouleversés cherchent autre chose : <em style="color:rgba(255,255,255,.9)">"comment agir contre les inondations à long terme"</em>, <em style="color:rgba(255,255,255,.9)">"association lutte changement climatique dons"</em>. <strong>Ce sont deux publics, deux urgences, deux tunnels de conversion différents</strong> — et personne ne les capte encore.</p>
+    <p class="narrative-p">Ce n'est pas une question de budget. C'est une question de <strong>vitesse, de méthode et de positionnement</strong>. <span class="yel">La fenêtre d'attention dure 48 à 72h. Celui qui structure l'information en premier — pour l'urgentiste ET pour l'engagé long terme — captera une audience pour des années.</span></p>
+
+    <div class="two-angles">
+      <div class="angle-card urgent">
+        <span class="angle-icon">🆘</span>
+        <div class="angle-title">Discours urgentiste</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.5">Pour les sinistrés et leurs proches. Besoin de réponses <strong style="color:white">ce soir</strong>. Court terme, actionnable, rassurant.</p>
+        <ul class="angle-queries">
+          <li>"aide relogement sinistré inondation"</li>
+          <li>"droits locataire après inondation"</li>
+          <li>"association aide d'urgence crue"</li>
+        </ul>
+        <span class="angle-cta">⏱ Tunnel don d'urgence → 24h</span>
+      </div>
+      <div class="angle-card ecolo">
+        <span class="angle-icon">🌍</span>
+        <div class="angle-title">Discours écologique</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.6);line-height:1.5">Pour les citoyens révoltés qui veulent <strong style="color:white">agir sur les causes</strong>. Long terme, structurel, engageant.</p>
+        <ul class="angle-queries">
+          <li>"comment lutter contre les inondations"</li>
+          <li>"association dérèglement climatique don"</li>
+          <li>"prévention risques naturels bénévole"</li>
+        </ul>
+        <span class="angle-cta">♾️ Tunnel donateur régulier → long terme</span>
+      </div>
+    </div>
     <div class="crisis-timeline">
-      <div class="ct-item"><div class="ct-time">J·0<br>07:00</div><div class="ct-dot red"></div><div class="ct-body"><strong>Rapport INSERM publié</strong><span>Les chiffres fuient sur X. Premier pic de recherche. Les médias ne réagissent pas encore.</span></div></div>
-      <div class="ct-item"><div class="ct-time">J·0<br>11:30</div><div class="ct-dot yel"></div><div class="ct-body"><strong>BFM TV couvre en breaking news</strong><span>Deuxième pic de recherche, ×4. Les gens cherchent "que faire" mais ne trouvent que du généraliste.</span></div></div>
-      <div class="ct-item"><div class="ct-time">J·0<br>18:00</div><div class="ct-dot yel"></div><div class="ct-body"><strong>Les parents partagent massivement</strong><span>Témoignages viraux. L'émotion est au max. La fenêtre d'engagement est grande ouverte.</span></div></div>
-      <div class="ct-item"><div class="ct-time">J·1<br>09:00</div><div class="ct-dot" style="background:var(--y);box-shadow:0 0 10px rgba(255,214,0,.6)"></div><div class="ct-body"><strong>⚠️ Vous êtes ici — C'est maintenant</strong><span>Le sujet tient encore 24 à 48h avant de disparaître de l'actu. La fenêtre est ouverte.</span></div></div>
-      <div class="ct-item" style="opacity:.35"><div class="ct-time">J·3</div><div class="ct-dot gray"></div><div class="ct-body"><strong>La fenêtre se ferme</strong><span>L'algorithme passe à autre chose. Ceux qui ont capté les leads auront une base. Les autres, rien.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·0<br>05:00</div><div class="ct-dot red"></div><div class="ct-body"><strong>Premières images des crues sur les réseaux</strong><span>Vidéos de rues submergées partagées massivement. Premier pic de recherche. Les médias ne réagissent pas encore.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·0<br>12:00</div><div class="ct-dot yel"></div><div class="ct-body"><strong>Alerte rouge étendue à 12 départements</strong><span>La presse nationale couvre. Deuxième pic de recherche ×4. Les gens cherchent "que faire concrètement" — et ne trouvent que de l'institutionnel.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·0<br>20:00</div><div class="ct-dot yel"></div><div class="ct-body"><strong>Témoignages de sinistrés viraux — et premières questions clima</strong><span>Deux fils narratifs émergent en parallèle : l'urgence humaine immédiate ET la colère écologique. La fenêtre d'engagement est grande ouverte sur les deux fronts.</span></div></div>
+      <div class="ct-item"><div class="ct-time">J·1<br>09:00</div><div class="ct-dot" style="background:var(--y);box-shadow:0 0 10px rgba(255,214,0,.6)"></div><div class="ct-body"><strong>⚠️ Vous êtes ici — C'est maintenant</strong><span>Le sujet tient encore 48 à 72h avant de disparaître de l'actu. La fenêtre est ouverte sur les deux discours.</span></div></div>
+      <div class="ct-item" style="opacity:.35"><div class="ct-time">J·3</div><div class="ct-dot gray"></div><div class="ct-body"><strong>La fenêtre se ferme</strong><span>L'algorithme passe à autre chose. Ceux qui ont capté leads urgentistes ET engagés long terme auront une base durable. Les autres, rien.</span></div></div>
     </div>
   </div>
 </div>
@@ -431,16 +485,16 @@ html{scroll-behavior:smooth}
 <div class="challenge-section">
   <div class="challenge-inner">
     <span class="chal-icon">🎯</span>
-    <h2 class="chal-h">Votre défi :<br><span class="yl">devenir la référence</span><br>avant que la fenêtre se ferme</h2>
-    <p class="chal-body">Vous avez ce que les médias n'ont pas : <strong>la légitimité, l'expertise terrain, la confiance</strong>. Ce qui vous manquait, c'était la méthode. C'est ce que vous allez construire en <strong>90 minutes</strong>.</p>
+    <h2 class="chal-h">Votre défi :<br><span class="yl">parler à deux publics,</span><br>capturer les deux</h2>
+    <p class="chal-body">D'un côté : des sinistrés en détresse qui ont besoin d'une réponse <strong>ce soir</strong>. De l'autre : des citoyens révoltés qui veulent <strong>s'engager sur le long terme</strong>. Votre asso peut parler aux deux — avec le même tunnel, deux entrées différentes. C'est ce que vous allez construire en <strong>90 minutes</strong>.</p>
     <div class="tension-bar">
-      <div class="tb-item"><span class="tbi-num">90</span><span class="tbi-label">minutes pour construire</span></div>
+      <div class="tb-item"><span class="tbi-num">90</span><span class="tbi-label">minutes · 2 tunnels à construire</span></div>
       <div class="tb-item"><span class="tbi-num">4</span><span class="tbi-label">étapes du tunnel complet</span></div>
       <div class="tb-item"><span class="tbi-num">6</span><span class="tbi-label">équipes en compétition</span></div>
     </div>
     <div class="brief-card">
       <span class="brief-card-tag">📋 Votre mission</span>
-      <p>La crise a éclaté. <strong>Le public cherche des réponses sur les IA et les moteurs de recherche.</strong> Votre défi : <strong>devenir la source de référence</strong>, capter les contacts chauds et transformer l'émotion du moment en engagement durable.</p>
+      <p>Des inondations majeures frappent la France. <strong>Deux publics cherchent des réponses sur les IA et les moteurs de recherche</strong> : les sinistrés en urgence immédiate, et les citoyens qui veulent agir contre le dérèglement climatique. Votre défi : <strong>être la référence pour les deux</strong>, capter leurs contacts et transformer l'émotion du moment en engagement durable.</p>
     </div>
     <div class="brief-cta-row">
       <button class="hero-cta" onclick="s2('steps')">Voir les 4 étapes →</button>
@@ -468,7 +522,7 @@ html{scroll-behavior:smooth}
 <!-- ══ DETAIL ══ -->
 <section class="detail-section" id="detail-zone">
   <div class="inner">
-    <div class="step-detail" id="det1"><div class="sdh"><div class="sdn" style="color:var(--s1)">01</div><div class="sdi"><h3>Devenir la référence pour les IA</h3><p>Listez les questions réelles posées pendant la crise et construisez des blocs conçus pour être cités par ChatGPT et Google.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">🔍</div><h4>Le contenu expert</h4><p>Listez les <strong style="color:var(--y)">3 questions précises</strong> que les gens posent à ChatGPT sur votre crise. Pensez intention : pas "santé mentale" mais "comment aider mon fils anxieux refus scolaire".</p></div><div class="task-card"><div class="tci">🏗️</div><h4>Le bloc de réponse 50 mots</h4><p>Rédigez un bloc <strong style="color:var(--y)">hyper structuré de 50 mots</strong> : chiffres, verbes d'action, pas de jargon. Conçu pour être copié-collé par une IA comme réponse de référence.</p></div></div><div class="snav"><span></span><button class="nx" onclick="showStep(2)">Étape 02 →</button></div></div>
+    <div class="step-detail" id="det1"><div class="sdh"><div class="sdn" style="color:var(--s1)">01</div><div class="sdi"><h3>Devenir la référence pour les IA</h3><p>Listez les questions réelles posées pendant la crise et construisez des blocs conçus pour être cités par ChatGPT et Google.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">🔍</div><h4>Le contenu expert</h4><p>Listez les <strong style="color:var(--y)">3 questions précises</strong> que les gens posent à ChatGPT sur votre crise. Pensez intention : pas "inondation" mais "comment me reloger après crue urgence" ou "association contre dérèglement climatique dons".</p></div><div class="task-card"><div class="tci">🏗️</div><h4>Le bloc de réponse 50 mots</h4><p>Rédigez un bloc <strong style="color:var(--y)">hyper structuré de 50 mots</strong> : chiffres, verbes d'action, pas de jargon. Conçu pour être copié-collé par une IA comme réponse de référence.</p></div></div><div class="snav"><span></span><button class="nx" onclick="showStep(2)">Étape 02 →</button></div></div>
     <div class="step-detail" id="det2"><div class="sdh"><div class="sdn" style="color:var(--s2)">02</div><div class="sdi"><h3>Le Crochet et la Capture</h3><p>Un contenu à forte valeur qui justifie de laisser son email — et le parcours le plus court vers la conversion.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">💎</div><h4>Le lead magnet</h4><p>Imaginez un <strong style="color:var(--y)">contenu gratuit à forte valeur</strong> — guide, infographie, webinaire, kit… En le voyant, la personne doit se dire "j'en ai besoin maintenant".</p></div><div class="task-card"><div class="tci">🛬</div><h4>La landing page</h4><p>3 éléments : la <strong style="color:var(--y)">promesse</strong> (ce qu'ils obtiennent), la <strong style="color:var(--y)">preuve</strong> (pourquoi vous êtes légitimes), l'<strong style="color:var(--y)">action</strong> (un bouton, un champ email).</p></div></div><div class="snav"><button class="pv" onclick="showStep(1)">← Étape 01</button><button class="nx" onclick="showStep(3)">Étape 03 →</button></div></div>
     <div class="step-detail" id="det3"><div class="sdh"><div class="sdn" style="color:var(--s3)">03</div><div class="sdi"><h3>La Boucle de Conversion CRM</h3><p>3 emails, un déclencheur comportemental précis. De la livraison du contenu jusqu'à l'appel au don.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">✉️</div><h4>Le scénario 3 emails</h4><p><strong style="color:var(--y)">Mail 1 :</strong> livraison + preuve d'impact · <strong style="color:var(--y)">Mail 2 :</strong> témoignage terrain · <strong style="color:var(--y)">Mail 3 :</strong> appel au don. Objet + accroche + CTA pour chaque.</p></div><div class="task-card"><div class="tci">⚡</div><h4>Le déclencheur comportemental</h4><p>Quel <strong style="color:var(--y)">comportement précis</strong> déclenche le mail de don ? Soyez précis : "Si clic sur lien vidéo dans Mail 2 → attendre 60 min → envoyer Mail 3".</p></div></div><div class="snav"><button class="pv" onclick="showStep(2)">← Étape 02</button><button class="nx" onclick="showStep(4)">Étape 04 →</button></div></div>
     <div class="step-detail" id="det4"><div class="sdh"><div class="sdn" style="color:#9c8fc0">04</div><div class="sdi"><h3>La Boucle de Fidélisation</h3><p>Le don est fait. Transformez ce geste ponctuel en engagement durable et en bouche-à-oreille actif.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">📊</div><h4>La preuve d'impact J+30</h4><p>Message envoyé <strong style="color:var(--y)">30 jours après le don</strong> montrant concrètement l'impact. Mail, vidéo ou SMS — format + contenu + objet.</p></div><div class="task-card"><div class="tci">🔄</div><h4>Le don régulier</h4><p>Mécanique pour passer au <strong style="color:var(--y)">don mensuel</strong> — cercle ambassadeurs, newsletter terrain, avantages exclusifs. L'argument qui fait basculer.</p></div><div class="task-card"><div class="tci">📢</div><h4>Le parrainage viral</h4><p>Inciter à partager à <strong style="color:var(--y)">3 proches</strong> — mécanisme, message, incentive ou émotion. Concret : quoi, quand, comment.</p></div></div><div class="snav"><button class="pv" onclick="showStep(3)">← Étape 03</button><button class="nx" onclick="s2('tools')">Boîte à outils →</button></div></div>
@@ -491,7 +545,7 @@ html{scroll-behavior:smooth}
     <div class="tools-grid">
       <!-- S1 -->
       <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🤖</div><div class="tool-name">Claude / ChatGPT</div><div class="tool-cat">Étape 01 · Blocs de réponse IA</div><div class="tool-use">Générez votre bloc de 50 mots calibré pour être cité par les IA — avec le bon prompt.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Claude / ChatGPT</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">Ouvrez claude.ai ou chatgpt.com</li><li data-n="2">Copiez le prompt ci-dessous, remplacez les crochets</li><li data-n="3">Générez 3 variantes, gardez la plus structurée</li><li data-n="4">Testez dans Perplexity : l'IA la reprend-elle ?</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Tu es expert en [CAUSE]. Rédige un bloc de 50 mots max sur [CRISE], hyper structuré : commence par un chiffre clé, utilise des verbes d'action, cite 1 solution concrète. Format : directement exploitable comme réponse de référence par une IA.</div></div></div></div>
-      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🔍</div><div class="tool-name">AnswerThePublic</div><div class="tool-cat">Étape 01 · Questions réelles du public</div><div class="tool-use">Récupérez toutes les questions que les gens posent sur Google autour de votre crise.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">AnswerThePublic</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">answerthepublic.com</li><li data-n="2">Tapez 2-3 mots sur votre crise (ex: "dépression ado")</li><li data-n="3">Exportez le CSV ou notez les questions "pourquoi" et "comment"</li><li data-n="4">Sélectionnez les 3 avec le plus fort volume émotionnel</li></ul><div class="fb-label">Prompt pour affiner</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Voici 5 questions que les gens posent sur [CRISE] : [LISTE]. Laquelle a le plus fort potentiel d'être posée à une IA en situation de détresse ? Classe-les et explique pourquoi.</div></div></div></div>
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🔍</div><div class="tool-name">AnswerThePublic</div><div class="tool-cat">Étape 01 · Questions réelles du public</div><div class="tool-use">Récupérez toutes les questions que les gens posent sur Google autour de votre crise.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">AnswerThePublic</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">answerthepublic.com</li><li data-n="2">Tapez 2-3 mots sur votre crise (ex: "sinistré inondation" ou "prévenir crues")</li><li data-n="3">Exportez le CSV ou notez les questions "pourquoi" et "comment"</li><li data-n="4">Sélectionnez les 3 avec le plus fort volume émotionnel</li></ul><div class="fb-label">Prompt pour affiner</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Voici 5 questions que les gens posent sur [CRISE] : [LISTE]. Laquelle a le plus fort potentiel d'être posée à une IA en situation de détresse ? Classe-les et explique pourquoi.</div></div></div></div>
       <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🌐</div><div class="tool-name">Perplexity AI</div><div class="tool-cat">Étape 01 · Test de positionnement</div><div class="tool-use">Testez qui est actuellement cité sur votre sujet et vérifiez si votre bloc serait repris.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Perplexity AI</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">perplexity.ai</li><li data-n="2">Posez vos questions comme un parent en détresse</li><li data-n="3">Notez quelle orga est citée — ou personne</li><li data-n="4">Collez votre bloc : "Cette réponse serait-elle citée en référence ?"</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Évalue ce texte de 50 mots : [VOTRE BLOC]. Est-il suffisamment structuré et factuel pour être cité par une IA comme source de référence sur [SUJET] ? Qu'est-ce qui manque ?</div></div></div></div>
       <!-- S2 -->
       <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🚀</div><div class="tool-name">Lovable</div><div class="tool-cat">Étape 02 · Landing page en langage naturel</div><div class="tool-use">Décrivez votre page en français, obtenez une landing publiable en 5 minutes, sans code.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Lovable</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">lovable.dev → compte gratuit → New Project</li><li data-n="2">Copiez le prompt ci-dessous dans le chat</li><li data-n="3">Modifiez le texte généré via le chat Lovable</li><li data-n="4">Cliquez "Publish" → URL partageable immédiate</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Crée une landing page minimaliste pour [NOM ASSO]. Titre : [PROMESSE]. Sous-titre : [CONTEXTE CRISE en 1 phrase]. Un seul formulaire avec prénom + email. Bouton CTA : "[ACTION]". Couleurs : [COULEURS ASSO]. Style sobre et professionnel.</div></div></div></div>
@@ -537,7 +591,7 @@ html{scroll-behavior:smooth}
         <button class="sub-btn" onclick="submitCard(1)" id="sbtn1">Déposer l'étape 01 →</button></div>
       <div class="ucard"><span class="ubadge b2">Étape 02 · Capture</span><h4>Lead magnet & landing page</h4>
         <div class="fg"><label>Votre groupe</label><select id="u2g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
-        <div class="fg"><label>Titre du lead magnet</label><input type="text" id="u2l" placeholder="Ex: Guide urgence santé mentale ado 2026"></div>
+        <div class="fg"><label>Titre du lead magnet</label><input type="text" id="u2l" placeholder="Ex: Kit sinistré inondation — vos droits en 48h"></div>
         <div class="fg"><label>Argument clé de la landing</label><textarea rows="3" id="u2a" placeholder="En 2 phrases, l'argument qui fait cliquer…"></textarea></div>
         <div class="fg"><label>Lien en ligne (Lovable, Notion…)</label><input type="url" id="u2url" placeholder="https://lovable.dev/votre-page…"></div>
         <button class="sub-btn" onclick="submitCard(2)" id="sbtn2">Déposer l'étape 02 →</button></div>
@@ -617,7 +671,7 @@ let myVotes = JSON.parse(localStorage.getItem('aff_my_votes') || '{}');
 function saveMyVotes(){ localStorage.setItem('aff_my_votes', JSON.stringify(myVotes)); }
 
 // ── CONSTANTS ──
-const CAUSES=[{id:'climat',label:'🌍 Urgence climatique'},{id:'huma',label:'🤝 Crise humanitaire'},{id:'sante',label:'🧠 Santé mentale jeunes'},{id:'viol',label:'🛡️ Violences faites aux femmes'},{id:'prec',label:'🏠 Précarité & mal-logement'}];
+const CAUSES=[{id:'flood-urgence',label:'🆘 Sinistrés inondation — urgence immédiate'},{id:'flood-clima',label:'🌍 Crise écologique — engagement long terme'},{id:'sans-abri',label:'🏠 Sans-abri & mal-logement aggravé par les crues'},{id:'prec',label:'⚡ Précarité énergétique & résilience'},{id:'biodiv',label:'🌿 Biodiversité & prévention des risques'}];
 const SCOLS={1:'var(--pd)',2:'#C05020',3:'#A02030',4:'var(--p)'};
 const STAGS={1:'ts1',2:'ts2',3:'ts3',4:'ts4'};
 const SNAMES={1:'Étape 01 · IA',2:'Étape 02 · Capture',3:'Étape 03 · CRM',4:'Étape 04 · Fidélisation'};
