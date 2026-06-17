@@ -348,6 +348,22 @@ section{padding:5rem 1.5rem}
 .footer-logo{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;color:var(--y);margin-bottom:.35rem}
 .footer-tag{font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:.12em;text-transform:uppercase}
 html{scroll-behavior:smooth}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--pd);border:2px solid var(--y);border-radius:5px;padding:2rem;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;position:relative}
+.modal-overlay.open .modal-box{transform:translateY(0)}
+.modal-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-step-tag{display:inline-block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .8rem;border-radius:2px;margin-bottom:1rem}
+.modal-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.3rem;color:white;margin-bottom:.3rem}
+.modal-group{font-size:.82rem;color:rgba(255,255,255,.45);margin-bottom:1.5rem}
+.modal-field{margin-bottom:1.2rem}
+.modal-field-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.4rem}
+.modal-field-value{font-size:.9rem;color:rgba(255,255,255,.85);line-height:1.65;white-space:pre-wrap}
+.modal-link{display:inline-block;background:var(--y);color:var(--pd);font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.82rem;padding:.5rem 1.2rem;border-radius:3px;text-decoration:none;margin-top:.5rem}
+.gitem{cursor:pointer}
+.gitem:hover .gthumb{opacity:.85}
+
 </style>
 </head>
 <body>
@@ -624,6 +640,16 @@ html{scroll-behavior:smooth}
 </section>
 
 
+
+<div class="modal-overlay" id="sub-modal" onclick="closeModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('sub-modal').classList.remove('open')">✕</button>
+    <span class="modal-step-tag" id="m-tag"></span>
+    <div class="modal-title" id="m-title"></div>
+    <div class="modal-group" id="m-group"></div>
+    <div id="m-fields"></div>
+  </div>
+</div>
 <footer class="footer">
   <div class="footer-logo">AFF · Séminaire 2026</div>
   <div class="footer-tag">#AFFSEMINAIRE · Juin 2026 · Sprint de Crise</div>
@@ -819,14 +845,16 @@ function renderGallery(subs,voteCounts={}){
     const myV=myVotes[s.id]||{};
     const el=document.createElement('div');
     el.className='gitem';el.setAttribute('data-step',s.step);el.id='gi-'+s.id;
+    el.setAttribute('data-sub',JSON.stringify({step:s.step,title:s.title,group:s.group_name,notes:s.notes,url:s.url}));
+    el.onclick=()=>openModal(JSON.parse(el.getAttribute('data-sub')));
     el.innerHTML=`
       <div class="gthumb" style="background:${SCOLS[s.step]}">${String(s.step).padStart(2,'0')}</div>
       <div class="gbody">
         <h4>${s.title||'Production'}</h4>
         <p class="gorg">${s.group_name||'—'}</p>
         <p class="gcause">${s.cause||''}</p>
-        ${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="font-size:.76rem;color:var(--pl);display:block;margin-bottom:.4rem;word-break:break-all">🔗 Voir en ligne</a>`:''}
         <span class="gstag ${STAGS[s.step]}">${SNAMES[s.step]}</span>
+        <p style="font-size:.72rem;color:var(--pl);margin-top:.5rem">👁 Voir le détail →</p>
       </div>`;
     g.appendChild(el);
   });
@@ -933,6 +961,43 @@ function notif(t,m){clearTimeout(ntmr);document.getElementById('ntit').textConte
 
 // ── HELPERS ──
 function s2(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});}
+
+
+// ── MODAL ──
+const STEP_FIELD_LABELS = {
+  1: [['Vos 3 questions clés','notes'],['Contenu de référence','title'],['Lien en ligne','url']],
+  2: [['Titre du lead magnet','title'],['Argument clé','notes'],['Lien en ligne','url']],
+  3: [['Scénario 3 emails + déclencheur','notes'],['Lien en ligne','url']],
+  4: [['Mécanique fidélisation','title'],['Message J+30','notes'],['Lien en ligne','url']],
+};
+const BADGE_COLORS = {1:'background:var(--s1);color:var(--pd)',2:'background:var(--s2);color:white',3:'background:var(--s3);color:white',4:'background:var(--s4);color:white'};
+
+function openModal(s){
+  document.getElementById('m-tag').style.cssText = BADGE_COLORS[s.step]||'';
+  document.getElementById('m-tag').textContent = SNAMES[s.step];
+  document.getElementById('m-title').textContent = s.title||'Production';
+  document.getElementById('m-group').textContent = s.group||'';
+  const fields = document.getElementById('m-fields');
+  fields.innerHTML = '';
+  if(s.notes){
+    fields.innerHTML += `<div class="modal-field"><div class="modal-field-label">Contenu</div><div class="modal-field-value">${s.notes}</div></div>`;
+  }
+  if(s.url){
+    fields.innerHTML += `<div class="modal-field"><div class="modal-field-label">Lien en ligne</div><a class="modal-link" href="${s.url}" target="_blank" rel="noopener">🔗 Ouvrir le lien</a></div>`;
+  }
+  if(!s.notes && !s.url){
+    fields.innerHTML = '<div class="modal-field"><div class="modal-field-value" style="color:rgba(255,255,255,.35);font-style:italic">Aucun contenu supplémentaire déposé.</div></div>';
+  }
+  document.getElementById('sub-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('sub-modal')){
+    document.getElementById('sub-modal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
 
 // ── START ──
 boot();
