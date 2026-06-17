@@ -16,7 +16,7 @@
 body{font-family:'DM Sans',sans-serif;background:var(--pd);color:var(--w);overflow-x:hidden}
 
 /* ── CONFIG BANNER ── */
-.config-banner{background:#E84855;color:white;text-align:center;padding:.7rem 1.5rem;font-size:.85rem;display:flex;align-items:center;justify-content:center;gap:.8rem;flex-wrap:wrap}
+.config-banner{display:none !important}
 .config-banner strong{font-family:'Bricolage Grotesque',sans-serif;font-weight:800}
 .config-banner a{color:white;text-underline-offset:3px}
 .config-banner.hidden{display:none}
@@ -297,7 +297,7 @@ section{padding:5rem 1.5rem}
 .gallery-section{background:var(--ow);color:var(--td)}
 .gallery-section .sh2{color:var(--td)}
 .gallery-section .gsub{color:#666;margin-bottom:1.5rem;font-size:.95rem}
-.vote-how{background:rgba(74,64,99,.08);border:1.5px solid rgba(74,64,99,.2);border-radius:4px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:.85rem;color:#444;line-height:1.6}
+.vote-how{display:none}
 .vote-how strong{color:var(--p)}
 .gtabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
 .gtab{padding:.45rem 1.1rem;border-radius:2px;border:2px solid var(--p);background:transparent;color:var(--p);font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:all .15s}
@@ -313,7 +313,7 @@ section{padding:5rem 1.5rem}
 .gbody .gcause{font-size:.73rem;color:var(--pl);font-weight:600;margin-bottom:.5rem}
 .gstag{display:inline-block;font-size:.66rem;font-weight:600;padding:.2rem .45rem;border-radius:2px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}
 .ts1{background:#FFF8C0;color:#8A7000}.ts2{background:#FFF0E8;color:#C05020}.ts3{background:#FFE8EA;color:#A02030}.ts4{background:#EAE8F5;color:var(--p)}
-.vote-row{display:flex;gap:.4rem;margin-top:.5rem}
+.vote-row{display:none}
 .vbtn{flex:1;background:var(--gl);border:1.5px solid transparent;border-radius:3px;padding:.45rem .3rem;font-size:.7rem;font-weight:600;color:#555;cursor:pointer;transition:all .2s;text-align:center;line-height:1.25}
 .vbtn:hover{background:var(--p);color:white;border-color:var(--p)}
 .vbtn.voted{background:var(--p);color:white;border-color:var(--p)}
@@ -516,7 +516,7 @@ html{scroll-behavior:smooth}
 <!-- ══ DETAIL ══ -->
 <section class="detail-section" id="detail-zone">
   <div class="inner">
-    <div class="step-detail" id="det1"><div class="sdh"><div class="sdn" style="color:var(--s1)">01</div><div class="sdi"><h3>Devenir la référence pour les IA</h3><p>Listez les questions réelles posées pendant la crise et construisez des blocs conçus pour être cités par ChatGPT et Google.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">🔍</div><h4>Le contenu expert</h4><p>Listez les <strong style="color:var(--y)">3 questions précises</strong> que les gens posent à ChatGPT sur votre crise. Pensez intention : pas "inondation" mais "comment me reloger après crue urgence" ou "association contre dérèglement climatique dons".</p></div><div class="task-card"><div class="tci">🏗️</div><h4>Le bloc de réponse 50 mots</h4><p>Rédigez un bloc <strong style="color:var(--y)">hyper structuré de 50 mots</strong> : chiffres, verbes d'action, pas de jargon. Conçu pour être copié-collé par une IA comme réponse de référence.</p></div></div><div class="snav"><span></span><button class="nx" onclick="showStep(2)">Étape 02 →</button></div></div>
+    <div class="step-detail" id="det1"><div class="sdh"><div class="sdn" style="color:var(--s1)">01</div><div class="sdi"><h3>Devenir la référence pour les IA</h3><p>Listez les questions réelles posées pendant la crise et construisez un contenu de référence — article, FAQ ou landing page — conçu pour être cité par ChatGPT et Google.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">🔍</div><h4>Le contenu expert</h4><p>Listez les <strong style="color:var(--y)">3 questions précises</strong> que les gens posent à ChatGPT sur votre crise. Pensez intention : pas "inondation" mais "comment me reloger après crue urgence" ou "association contre dérèglement climatique dons".</p></div><div class="task-card"><div class="tci">🏗️</div><h4>Le contenu de référence</h4><p>Produisez un <strong style="color:var(--y)">contenu dense et structuré</strong> : article de blog expert, FAQ complète ou landing page thématique (800-1500 mots). Les IA citent du contenu structuré avec titres H2, chiffres et actions concrètes — pas des blocs courts.</p></div></div><div class="snav"><span></span><button class="nx" onclick="showStep(2)">Étape 02 →</button></div></div>
     <div class="step-detail" id="det2"><div class="sdh"><div class="sdn" style="color:var(--s2)">02</div><div class="sdi"><h3>Le Crochet et la Capture</h3><p>Un contenu à forte valeur qui justifie de laisser son email — et le parcours le plus court vers la conversion.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">💎</div><h4>Le lead magnet</h4><p>Imaginez un <strong style="color:var(--y)">contenu gratuit à forte valeur</strong> — guide, infographie, webinaire, kit… En le voyant, la personne doit se dire "j'en ai besoin maintenant".</p></div><div class="task-card"><div class="tci">🛬</div><h4>La landing page</h4><p>3 éléments : la <strong style="color:var(--y)">promesse</strong> (ce qu'ils obtiennent), la <strong style="color:var(--y)">preuve</strong> (pourquoi vous êtes légitimes), l'<strong style="color:var(--y)">action</strong> (un bouton, un champ email).</p></div></div><div class="snav"><button class="pv" onclick="showStep(1)">← Étape 01</button><button class="nx" onclick="showStep(3)">Étape 03 →</button></div></div>
     <div class="step-detail" id="det3"><div class="sdh"><div class="sdn" style="color:var(--s3)">03</div><div class="sdi"><h3>La Boucle de Conversion CRM</h3><p>3 emails, un déclencheur comportemental précis. De la livraison du contenu jusqu'à l'appel au don.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">✉️</div><h4>Le scénario 3 emails</h4><p><strong style="color:var(--y)">Mail 1 :</strong> livraison + preuve d'impact · <strong style="color:var(--y)">Mail 2 :</strong> témoignage terrain · <strong style="color:var(--y)">Mail 3 :</strong> appel au don. Objet + accroche + CTA pour chaque.</p></div><div class="task-card"><div class="tci">⚡</div><h4>Le déclencheur comportemental</h4><p>Quel <strong style="color:var(--y)">comportement précis</strong> déclenche le mail de don ? Soyez précis : "Si clic sur lien vidéo dans Mail 2 → attendre 60 min → envoyer Mail 3".</p></div></div><div class="snav"><button class="pv" onclick="showStep(2)">← Étape 02</button><button class="nx" onclick="showStep(4)">Étape 04 →</button></div></div>
     <div class="step-detail" id="det4"><div class="sdh"><div class="sdn" style="color:#9c8fc0">04</div><div class="sdi"><h3>La Boucle de Fidélisation</h3><p>Le don est fait. Transformez ce geste ponctuel en engagement durable et en bouche-à-oreille actif.</p></div></div><div class="tasks-grid"><div class="task-card"><div class="tci">📊</div><h4>La preuve d'impact J+30</h4><p>Message envoyé <strong style="color:var(--y)">30 jours après le don</strong> montrant concrètement l'impact. Mail, vidéo ou SMS — format + contenu + objet.</p></div><div class="task-card"><div class="tci">🔄</div><h4>Le don régulier</h4><p>Mécanique pour passer au <strong style="color:var(--y)">don mensuel</strong> — cercle ambassadeurs, newsletter terrain, avantages exclusifs. L'argument qui fait basculer.</p></div><div class="task-card"><div class="tci">📢</div><h4>Le parrainage viral</h4><p>Inciter à partager à <strong style="color:var(--y)">3 proches</strong> — mécanisme, message, incentive ou émotion. Concret : quoi, quand, comment.</p></div></div><div class="snav"><button class="pv" onclick="showStep(3)">← Étape 03</button><button class="nx" onclick="s2('tools')">Boîte à outils →</button></div></div>
@@ -538,9 +538,9 @@ html{scroll-behavior:smooth}
     </div>
     <div class="tools-grid">
       <!-- S1 -->
-      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🤖</div><div class="tool-name">Claude / ChatGPT</div><div class="tool-cat">Étape 01 · Blocs de réponse IA</div><div class="tool-use">Générez votre bloc de 50 mots calibré pour être cité par les IA — avec le bon prompt.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Claude / ChatGPT</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">Ouvrez claude.ai ou chatgpt.com</li><li data-n="2">Copiez le prompt ci-dessous, remplacez les crochets</li><li data-n="3">Générez 3 variantes, gardez la plus structurée</li><li data-n="4">Testez dans Perplexity : l'IA la reprend-elle ?</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Tu es expert en [CAUSE]. Rédige un bloc de 50 mots max sur [CRISE], hyper structuré : commence par un chiffre clé, utilise des verbes d'action, cite 1 solution concrète. Format : directement exploitable comme réponse de référence par une IA.</div></div></div></div>
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🤖</div><div class="tool-name">Claude / ChatGPT</div><div class="tool-cat">Étape 01 · Blocs de réponse IA</div><div class="tool-use">Pour être cité par les IA, il faut un contenu dense : article expert, FAQ ou landing page thématique. Générez la structure complète avec Claude.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Claude / ChatGPT</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">Ouvrez claude.ai et décrivez votre cause et la crise</li><li data-n="2">Demandez une structure d'article expert ou de FAQ complète (800-1500 mots)</li><li data-n="3">Demandez des titres H2/H3 avec les questions exactes posées par les sinistrés</li><li data-n="4">Publiez sur votre site ou Notion public — les IA indexent ce type de contenu structuré</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Tu es expert en [CAUSE]. Rédige un article de référence de 1000 mots sur [CRISE] : commence par les 3 questions les plus posées, réponds à chacune avec des chiffres et des actions concrètes, structure avec des titres H2 clairs. Objectif : être cité par ChatGPT et Perplexity comme LA source experte.</div></div></div></div>
       <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🔍</div><div class="tool-name">AnswerThePublic</div><div class="tool-cat">Étape 01 · Questions réelles du public</div><div class="tool-use">Récupérez toutes les questions que les gens posent sur Google autour de votre crise.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">AnswerThePublic</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">answerthepublic.com</li><li data-n="2">Tapez 2-3 mots sur votre crise (ex: "sinistré inondation" ou "prévenir crues")</li><li data-n="3">Exportez le CSV ou notez les questions "pourquoi" et "comment"</li><li data-n="4">Sélectionnez les 3 avec le plus fort volume émotionnel</li></ul><div class="fb-label">Prompt pour affiner</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Voici 5 questions que les gens posent sur [CRISE] : [LISTE]. Laquelle a le plus fort potentiel d'être posée à une IA en situation de détresse ? Classe-les et explique pourquoi.</div></div></div></div>
-      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🌐</div><div class="tool-name">Perplexity AI</div><div class="tool-cat">Étape 01 · Test de positionnement</div><div class="tool-use">Testez qui est actuellement cité sur votre sujet et vérifiez si votre bloc serait repris.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Perplexity AI</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">perplexity.ai</li><li data-n="2">Posez vos questions comme un parent en détresse</li><li data-n="3">Notez quelle orga est citée — ou personne</li><li data-n="4">Collez votre bloc : "Cette réponse serait-elle citée en référence ?"</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Évalue ce texte de 50 mots : [VOTRE BLOC]. Est-il suffisamment structuré et factuel pour être cité par une IA comme source de référence sur [SUJET] ? Qu'est-ce qui manque ?</div></div></div></div>
+      <div class="flip-wrap" data-step="1"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🌐</div><div class="tool-name">Perplexity AI</div><div class="tool-cat">Étape 01 · Test de positionnement</div><div class="tool-use">Testez qui est actuellement cité sur votre sujet et vérifiez si votre bloc serait repris.</div><div class="tool-chips"><span class="chip free">Gratuit</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Perplexity AI</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">perplexity.ai</li><li data-n="2">Posez vos questions comme un sinistré ou un citoyen engagé</li><li data-n="3">Notez quelle orga est citée — ou personne</li><li data-n="4">Collez votre bloc : "Cette réponse serait-elle citée en référence ?"</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Recherche "aide sinistré inondation France" et "association lutte inondations". Quelles organisations sont citées en référence ? Maintenant évalue ce contenu : [VOTRE TEXTE/URL]. Serait-il cité comme source experte sur ce sujet ? Qu'est-ce qui manque pour s'imposer ?</div></div></div></div>
       <!-- S2 -->
       <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🚀</div><div class="tool-name">Lovable</div><div class="tool-cat">Étape 02 · Landing page en langage naturel</div><div class="tool-use">Décrivez votre page en français, obtenez une landing publiable en 5 minutes, sans code.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Lovable</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">lovable.dev → compte gratuit → New Project</li><li data-n="2">Copiez le prompt ci-dessous dans le chat</li><li data-n="3">Modifiez le texte généré via le chat Lovable</li><li data-n="4">Cliquez "Publish" → URL partageable immédiate</li></ul><div class="fb-label">Prompt</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Crée une landing page minimaliste pour [NOM ASSO]. Titre : [PROMESSE]. Sous-titre : [CONTEXTE CRISE en 1 phrase]. Un seul formulaire avec prénom + email. Bouton CTA : "[ACTION]". Couleurs : [COULEURS ASSO]. Style sobre et professionnel.</div></div></div></div>
       <div class="flip-wrap" data-step="2"><div class="flip-inner"><div class="flip-front"><div class="tool-logo">🎨</div><div class="tool-name">Canva</div><div class="tool-cat">Étape 02 · Lead magnet visuel</div><div class="tool-use">Guide ou infographie téléchargeable en 20 min à partir d'un template.</div><div class="tool-chips"><span class="chip fm">Freemium</span></div><div class="flip-hint">Hover → guide + prompt ↺</div></div><div class="flip-back"><div class="fb-back-title">Canva</div><div class="fb-label">Pas-à-pas</div><ul class="fb-steps"><li data-n="1">canva.com → Créer → Présentation ou Infographie</li><li data-n="2">Recherchez votre cause pour filtrer les templates</li><li data-n="3">Remplacez le texte, gardez la structure du template</li><li data-n="4">Téléchargez en PDF → votre lead magnet est prêt</li></ul><div class="fb-label">Prompt pour le contenu</div><div class="fb-prompt" onclick="copyPrompt(this)"><span class="copy-hint">cliquer pour copier</span>Rédige le contenu d'un guide PDF de 5 pages sur [SUJET] pour [PUBLIC CIBLE]. Chaque page = 1 titre percutant + 3 points actionnables + 1 ressource concrète. Ton : expert mais accessible.</div></div></div></div>
@@ -580,7 +580,7 @@ html{scroll-behavior:smooth}
       <div class="ucard"><span class="ubadge b1">Étape 01 · IA</span><h4>Contenu expert & bloc de réponse</h4>
         <div class="fg"><label>Votre groupe</label><select id="u1g" class="gi"><option value="">Sélectionnez…</option><option>Groupe 1</option><option>Groupe 2</option><option>Groupe 3</option><option>Groupe 4</option><option>Groupe 5</option><option>Groupe 6</option></select></div>
         <div class="fg"><label>Vos 3 questions clés</label><textarea rows="3" id="u1q" placeholder="1. …&#10;2. …&#10;3. …"></textarea></div>
-        <div class="fg"><label>Bloc de réponse (50 mots)</label><textarea rows="4" id="u1b" placeholder="Votre bloc hyper-structuré…"></textarea></div>
+        <div class="fg"><label>Lien ou résumé de votre contenu de référence</label><textarea rows="4" id="u1b" placeholder="Ex: URL article, FAQ, landing page créée…"></textarea></div>
         <div class="fg"><label>Lien en ligne (optionnel)</label><input type="url" id="u1l" placeholder="https://notion.so/votre-page…"></div>
         <button class="sub-btn" onclick="submitCard(1)" id="sbtn1">Déposer l'étape 01 →</button></div>
       <div class="ucard"><span class="ubadge b2">Étape 02 · Capture</span><h4>Lead magnet & landing page</h4>
@@ -610,9 +610,8 @@ html{scroll-behavior:smooth}
   <div class="inner">
     <span class="slabel">Résultats</span>
     <h2 class="sh2">Ce que les équipes ont créé</h2>
-    <p class="gsub">Productions déposées en direct pendant et après le séminaire.</p>
+    <p class="gsub">Productions déposées en direct pendant et après le séminaire — consultables par tous.</p>
     <div class="rt-badge"><span class="rt-dot"></span>Mis à jour en temps réel pour tous les participants</div>
-    <div class="vote-how"><strong>💡 Comment voter ?</strong> Sous chaque carte, 3 boutons : <strong>Originalité</strong>, <strong>Faisabilité</strong>, <strong>Wow Factor</strong>. Cliquez pour voter, recliquez pour annuler. Le score total alimente le classement ci-dessous — visible par tous en temps réel.</div>
     <div class="gtabs">
       <button class="gtab active" onclick="filterGallery('all',this)">Tout voir</button>
       <button class="gtab" onclick="filterGallery('1',this)">Étape 01</button>
@@ -624,15 +623,6 @@ html{scroll-behavior:smooth}
   </div>
 </section>
 
-<!-- ══ LEADERBOARD ══ -->
-<section class="lb-section" id="leaderboard">
-  <div class="inner">
-    <span class="slabel dk">Classement live</span>
-    <h2 class="sh2">Leaderboard</h2>
-    <p class="lb-intro">Score = total des votes reçus sur toutes les productions du groupe. Mise à jour en temps réel à chaque vote.</p>
-    <table class="lb-table"><thead><tr><th style="width:50px">#</th><th>Groupe</th><th style="width:110px">Score</th></tr></thead><tbody id="lb-body"><tr><td colspan="3" class="lb-empty">En attente des premiers votes…</td></tr></tbody></table>
-  </div>
-</section>
 
 <footer class="footer">
   <div class="footer-logo">AFF · Séminaire 2026</div>
@@ -763,16 +753,11 @@ function buildGroups(data=[]){
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
         <div class="gnum">G${n}</div><span class="cbadge">Actif</span>
       </div>
-      <div class="gcause-disp">${causeLabel(gd.cause)}</div>
       <div class="gsteps-disp">Focus : ${gd.steps||'Sprint complet'}</div>
       <div style="font-size:.78rem;color:#aaa;margin-top:.3rem">${gd.name||''}</div>
     `:`
       <div class="gnum">G${n}</div>
       <input class="gi" id="gn${n}" type="text" placeholder="Noms des 5 participants…">
-      <select class="gi" id="gcs${n}">
-        <option value="">Choisir votre cause…</option>
-        ${CAUSES.map(c=>`<option value="${c.id}">${c.label}</option>`).join('')}
-      </select>
       <select class="gi" id="gs${n}">
         <option value="">Votre focus d'étape(s)…</option>
         <option>Étape 01 uniquement</option><option>Étape 02 uniquement</option>
@@ -790,14 +775,12 @@ function buildGroupsFallback(){ buildGroups([]); }
 
 async function claimGroup(n){
   const name=document.getElementById('gn'+n)?.value?.trim();
-  const cause=document.getElementById('gcs'+n)?.value;
   const steps=document.getElementById('gs'+n)?.value;
   if(!name){notif('Champ manquant','Entrez les noms.');return;}
-  if(!cause){notif('Champ manquant','Choisissez votre cause.');return;}
   if(!steps){notif('Champ manquant',"Choisissez le focus d'étapes.");return;}
   const btn=document.querySelector('#gc'+n+' .claim-btn');
   if(btn){btn.disabled=true;btn.textContent='Enregistrement…';}
-  const {error}=await sb.from('groups').upsert({id:n,name,cause,steps});
+  const {error}=await sb.from('groups').upsert({id:n,name,cause:'inondations',steps});
   if(error){notif('Erreur',error.message);if(btn){btn.disabled=false;btn.textContent='Inscrire le groupe '+n+' →';}return;}
   notif('✓ Groupe '+n+' inscrit !',causeLabel(cause)+' · '+steps);
   await loadGroups();
@@ -824,7 +807,6 @@ async function loadGallery(){
     }
   }
   renderGallery(allSubs,voteCounts);
-  updLB(allSubs,voteCounts);
 }
 
 function renderGallery(subs,voteCounts={}){
@@ -845,11 +827,6 @@ function renderGallery(subs,voteCounts={}){
         <p class="gcause">${s.cause||''}</p>
         ${s.url?`<a href="${s.url}" target="_blank" rel="noopener" style="font-size:.76rem;color:var(--pl);display:block;margin-bottom:.4rem;word-break:break-all">🔗 Voir en ligne</a>`:''}
         <span class="gstag ${STAGS[s.step]}">${SNAMES[s.step]}</span>
-        <div class="vote-row">
-          <button class="vbtn${myV.o?' voted':''}" data-id="${s.id}" data-type="o" onclick="vote(this)"><span class="vc">${v.o}</span><span class="vlbl">💡 Originalité</span></button>
-          <button class="vbtn${myV.f?' voted':''}" data-id="${s.id}" data-type="f" onclick="vote(this)"><span class="vc">${v.f}</span><span class="vlbl">🔧 Faisabilité</span></button>
-          <button class="vbtn${myV.w?' voted':''}" data-id="${s.id}" data-type="w" onclick="vote(this)"><span class="vc">${v.w}</span><span class="vlbl">🔥 Wow</span></button>
-        </div>
       </div>`;
     g.appendChild(el);
   });
@@ -883,14 +860,12 @@ async function vote(btn){
     await sb.from('votes').upsert({submission_id:id,voter_id:VOTER_ID,vote_type:type});
   }
   // Refresh LB
-  await refreshLB();
 }
 
 async function refreshLB(){
   const {data:votes}=await sb.from('votes').select('submission_id,vote_type');
   const voteCounts={};
   (votes||[]).forEach(v=>{if(!voteCounts[v.submission_id])voteCounts[v.submission_id]={o:0,f:0,w:0};voteCounts[v.submission_id][v.vote_type]++;});
-  updLB(allSubs,voteCounts);
 }
 
 // ── LEADERBOARD ──
